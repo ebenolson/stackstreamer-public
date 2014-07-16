@@ -39,22 +39,6 @@
 	},
 	"buffers":
 	[
-		{
-			"file": "test1.html",
-			"settings":
-			{
-				"buffer_size": 4159,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "webgl.css",
-			"settings":
-			{
-				"buffer_size": 949,
-				"line_ending": "Unix"
-			}
-		}
 	],
 	"build_system": "",
 	"command_palette":
@@ -83,6 +67,8 @@
 	},
 	"file_history":
 	[
+		"/home/eben/torres/torres-research-webviewer/webgl.css",
+		"/home/eben/torres/torres-research-webviewer/test1.html",
 		"/home/eben/.matlab/R2013a/mexopts.sh",
 		"/home/eben/Dropbox/aws/sftp.sh",
 		"/mnt/django/plantbid/plantbid/tasks.py",
@@ -208,9 +194,7 @@
 		"/Volumes/django/plantbid/plantbid/templates/nursery_inventory_image.html",
 		"/Volumes/django/plantbid/plantbid/urls.py",
 		"/Volumes/django/plantbid/static/js/ajax_select.js",
-		"/Volumes/django/plantbid/plantbid/templates/nursery_dashboard.html",
-		"/Volumes/django/plantbid/plantbid/load_common.py",
-		"/Volumes/django/plantbid/plantbid/load_availability.py"
+		"/Volumes/django/plantbid/plantbid/templates/nursery_dashboard.html"
 	],
 	"find":
 	{
@@ -345,69 +329,8 @@
 	"groups":
 	[
 		{
-			"selected": 0,
 			"sheets":
 			[
-				{
-					"buffer": 0,
-					"file": "test1.html",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 4159,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/HTML/HTML.tmLanguage",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 0,
-					"type": "text"
-				},
-				{
-					"buffer": 1,
-					"file": "webgl.css",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 949,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/CSS/CSS.tmLanguage",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": -0.0,
-						"translation.y": 153.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 1,
-					"type": "text"
-				}
 			]
 		}
 	],
@@ -446,7 +369,7 @@
 	{
 		"height": 0.0
 	},
-	"project": "webviewer",
+	"project": "webviewer.sublime-project",
 	"replace":
 	{
 		"height": 46.0
