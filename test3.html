@@ -1,0 +1,57 @@
+
+<!-- Licensed under a BSD license. See license.html for license -->
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+<script src="jquery.mousewheel.min.js"></script>
+<script src="sprintf.min.js"></script>
+
+<script>
+$(document).ready(function() {
+
+  $('#tile1').mousewheel(function(event) {
+    var delta = event.deltaY;
+    if (delta > 3) { delta = 3; }
+    if (delta < -3) { delta = -3; }
+    var i = $('#tile1').data('slice')+delta;
+    if (i<0) { i=0; }
+    if (i>120) { i=120; }
+    $('#tile1').data('slice', i);
+    $('#tile1 img').attr('src', sprintf("pyramid/CIS276/zoom3/slice_%04d/tile_x0002_y0000.jpg", i));
+    //console.log(event.deltaX, event.deltaY, event.deltaFactor);
+    event.preventDefault();
+  });
+});
+</script>
+
+<style>
+#tile1 {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+}
+#tile2 {
+  position: absolute;
+  top: 0px;
+  left: 256px;
+}
+
+</style>
+
+</head>
+
+<body>
+<div class="container">
+  <div id="tile1" data-slice=0>
+    <img src="pyramid/CIS276/zoom3/slice_0000/tile_x0002_y0000.jpg"/>
+  </div>
+  <div id="tile2" data-slice=0>
+    <img src="pyramid/CIS276/zoom3/slice_0000/tile_x0003_y0000.jpg"/>
+  </div>
+</div>
+</body>
+</html>
+
+
