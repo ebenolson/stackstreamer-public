@@ -1,0 +1,85 @@
+
+<!-- Licensed under a BSD license. See license.html for license -->
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+<script src="jquery.mousewheel.min.js"></script>
+<script src="sprintf.min.js"></script>
+
+<script>
+function loadHighRes(e) {
+  $('img', e).attr('src', sprintf("pyramid/breast/pyramid/HnE/zoom%1d/slice_%04d/tile_x%04d_y%04d.png", 
+    $('.container').data('zoom'), $('.container').data('slice'), e.data('x'), e.data('y')));
+}
+$(document).ready(function() {
+  for (x=0; x<4; x++) {
+    for (y=0; y<4; y++) {
+      tile = $('<div class="tile"><img src=""/></div>');
+      tile.data('x', x);
+      tile.data('y', y);
+      $('.container').append(tile);
+    }
+  }
+
+  $('.tile').each( function () {
+    $(this).css('left', $(this).data('x')*256);
+    $(this).css('top', $(this).data('y')*256);
+    $('img', this).attr('src', sprintf("pyramid/breast/pyramid/HnE/zoom%1d/slice_%04d/tile_x%04d_y%04d.20.jpg", 
+      $('.container').data('zoom'), $('.container').data('slice'), $(this).data('x'), $(this).data('y')));
+  });
+
+  $('.container').mousewheel(function(event) {
+    var delta = event.deltaY;
+    if (delta > 3) { delta = 3; }
+    if (delta < -3) { delta = -3; }
+    var i = $(this).data('slice')+delta;
+    if (i<0) { i=0; }
+    if (i>120) { i=120; }
+    $(this).data('slice', i);
+    $('.tile').each( function () {
+      $(this).css('left', $(this).data('x')*256);
+      $(this).css('top', $(this).data('y')*256);
+      $('img', this).attr('src', sprintf("pyramid/breast/pyramid/HnE/zoom%1d/slice_%04d/tile_x%04d_y%04d.20.jpg", 
+        $('.container').data('zoom'), $('.container').data('slice'), $(this).data('x'), $(this).data('y')));
+      $('img', this).attr('onload', 'loadHighRes($(this).parent());');      
+    });    
+    //console.log(event.deltaX, event.deltaY, event.deltaFactor);
+    event.preventDefault();
+  });
+});
+</script>
+
+<style>
+.viewer {
+  border-color: black;
+  border-width: 2pt;
+  border-style: solid;
+}
+.container {
+  position:absolute;
+   margin-left: auto;
+   margin-right: auto;
+   width: 1060px;
+  left: 100px;
+  top: 100px;
+}
+.tile {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+}
+</style>
+
+</head>
+
+<body>
+<div class="viewer">
+<div class="container" data-slice=50 data-zoom=1>
+</div>
+</div>
+</body>
+</html>
+
+
