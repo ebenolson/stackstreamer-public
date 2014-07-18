@@ -1,11 +1,15 @@
 <html>
 <head>
+  <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+  <script src="../jquery.mousewheel.min.js"></script>
+  <script src="../sprintf.min.js"></script>
   <script src="http://cdn.binaryjs.com/0/binary.js"></script>
   <script>
     // Connect to Binary.js server
     var client = new BinaryClient('ws://localhost:9000');
-    // Received new stream from server!
-    client.on('stream', function(stream, meta){    
+
+    function loadImage(target, src) {
+      var stream = client.createStream({'action':'send', 'path':src});
       // Buffer for parts
       var parts = [];
       // Got new data
@@ -14,13 +18,94 @@
       });
       stream.on('end', function(){
         // Display new data in browser!
-        var img = document.createElement("img");
-        img.src = (window.URL || window.webkitURL).createObjectURL(new Blob(parts));
-        document.body.appendChild(img);
+        target.attr('src', (window.URL || window.webkitURL).createObjectURL(new Blob(parts)));
       });
+    }
+
+    function buildTiles() {
+      console.log('Adding tiles');
+
+      for (x=0; x<4; x++) {
+        for (y=0; y<4; y++) {
+          tile = $('<div class="tile"><img src=""/></div>');
+          tile.data('x', x);
+          tile.data('y', y);
+          //tile.addClass('hidden');
+          $('.container').append(tile);
+        }
+      }
+
+      $('.tile').each( function () {
+        $(this).css('left', $(this).data('x')*256);
+        $(this).css('top', $(this).data('y')*256);
+      });
+
+      updateTileImages();
+    }
+
+    function updateTileImages() {
+      $('.tile').each( function () {
+        loadImage($('img', this), sprintf("/zoom%1d/slice_%04d/tile_x%04d_y%04d.80.jpg", 
+          $('.container').data('zoom'), $('.container').data('slice'), $(this).data('x'), $(this).data('y')));
+      });
+    }
+
+    function activateControls() {
+      $('.container').mousewheel(function(event) {
+        var delta = event.deltaY;
+        if (delta > 1) { delta = 1; }
+        if (delta < -1) { delta = -1; }
+        var i = $(this).data('slice')+delta;
+        if (i<0) { i=0; }
+        if (i>160) { i=160; }
+        $(this).data('slice', i);
+        updateTileImages();
+        //console.log(event.deltaX, event.deltaY, event.deltaFactor);
+        $('#info #slice').text($('.container').data('slice'));
+        event.preventDefault();
+      });      
+    }
+
+    client.on('open', function(){
+      buildTiles();
+      activateControls();
     });
   </script>
+
+  <style>
+    .viewer {
+      border-color: black;
+      border-width: 2pt;
+      border-style: solid;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .container {
+      position:absolute;
+       margin-left: auto;
+       margin-right: auto;
+       width: 1060px;
+      left: 100px;
+      top: 100px;
+    }
+    .tile {
+      position: absolute;
+      top: 0px;
+      left: 0px;
+    }
+  </style>  
 </head>
 <body>
+  <div class="viewer">
+  <div class="container" data-slice=90 data-zoom=0>
+  </div>
+  </div>
+  <div id="info">
+    <h2 id="slice">10</h2>
+    <h2 id="zoom">0</h2>
+  </div>
 </body>
 </html>
