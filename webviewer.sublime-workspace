@@ -4,6 +4,10 @@
 		"selected_items":
 		[
 			[
+				"bord",
+				"border-width"
+			],
+			[
 				"Land",
 				"LandscaperBillingPlan"
 			],
@@ -37,9 +41,6 @@
 			]
 		]
 	},
-	"buffers":
-	[
-	],
 	"build_system": "",
 	"command_palette":
 	{
@@ -67,6 +68,8 @@
 	},
 	"file_history":
 	[
+		"/etc/nginx/nginx.conf",
+		"/etc/nginx/sites-enabled/default",
 		"/home/eben/torres/torres-research-webviewer/webgl.css",
 		"/home/eben/torres/torres-research-webviewer/test1.html",
 		"/home/eben/.matlab/R2013a/mexopts.sh",
@@ -192,13 +195,11 @@
 		"/Volumes/django/plantbid/plantbid/templates/upload.html",
 		"/Volumes/django/plantbid/requirements.txt",
 		"/Volumes/django/plantbid/plantbid/templates/nursery_inventory_image.html",
-		"/Volumes/django/plantbid/plantbid/urls.py",
-		"/Volumes/django/plantbid/static/js/ajax_select.js",
-		"/Volumes/django/plantbid/plantbid/templates/nursery_dashboard.html"
+		"/Volumes/django/plantbid/plantbid/urls.py"
 	],
 	"find":
 	{
-		"height": 25.0
+		"height": 35.0
 	},
 	"find_in_files":
 	{
@@ -213,6 +214,8 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"keep",
+			"left",
 			"pk",
 			"cache",
 			"font",
@@ -326,14 +329,6 @@
 		"whole_word": false,
 		"wrap": true
 	},
-	"groups":
-	[
-		{
-			"sheets":
-			[
-			]
-		}
-	],
 	"incremental_find":
 	{
 		"height": 25.0
@@ -369,7 +364,6 @@
 	{
 		"height": 0.0
 	},
-	"project": "webviewer.sublime-project",
 	"replace":
 	{
 		"height": 46.0
