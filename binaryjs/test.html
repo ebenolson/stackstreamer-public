@@ -1,6 +1,8 @@
 <html>
 <head>
   <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">
+  <script src="//code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
   <script src="../jquery.mousewheel.min.js"></script>
   <script src="../sprintf.min.js"></script>
   <script src="http://cdn.binaryjs.com/0/binary.js"></script>
@@ -44,11 +46,14 @@
     }
 
     function updateVisibleTiles() {
+      var x0 = parseInt($('#container').css('left'));
+      var y0 = parseInt($('#container').css('top'));
       $('.tile').each( function () {
-        x = parseInt($(this).css('left'));
-        y = parseInt($(this).css('top'));
+        var x = x0 + parseInt($(this).css('left'));
+        var y = y0 + parseInt($(this).css('top'));
         //console.log(y<1024 && x<1024);
-        if (x < 1024 && y < 1024) {
+        if (x > 0-256*1.5 && y > 0-256*1.5 && x < 1024+256*0.5 && y < 1024+256*0.5) {
+//          console.log('visible');
           $(this).removeClass('hidden');
           if ($('img', this).attr('src') == '') {
             loadImage($('img', this), sprintf("/zoom%1d/slice_%04d/tile_x%04d_y%04d.20.jpg", 
@@ -56,15 +61,21 @@
           }
         }
         else {
+//          console.log('hidden');
           $(this).addClass('hidden');
           $('img', this).attr('src', '');
         }
       });
     }
 
+    function dragUpdate(event, ui) {
+      updateVisibleTiles();
+    }
+
     function updateTileImages() {
       updateVisibleTiles();
 
+//      $('.tile').each( function () {
       $('.tile:not(.hidden)').each( function () {
         loadImage($('img', this), sprintf("/zoom%1d/slice_%04d/tile_x%04d_y%04d.20.jpg", 
           $('#container').data('zoom'), $('#container').data('slice'), $(this).data('x'), $(this).data('y')));
@@ -84,7 +95,9 @@
         //console.log(event.deltaX, event.deltaY, event.deltaFactor);
         $('#info #slice').text($('#container').data('slice'));
         event.preventDefault();
-      });      
+      });
+
+      $('#container').draggable({ drag: dragUpdate});
     }
 
     client.on('open', function(){
@@ -112,9 +125,10 @@
     #container {
       position:relative;
       overflow: hidden;
-      width: 1024px;
-      height: 1024px;
       top: 300px;
+      left: 0px;
+      width: 4096px;
+      height: 4096px;
     }
     .tile {
       position: absolute;
