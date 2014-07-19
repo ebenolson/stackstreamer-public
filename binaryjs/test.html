@@ -9,10 +9,17 @@
   <script>
     // Connect to Binary.js server
     var client = new BinaryClient('ws://107.170.14.203:9000');
+    //var streams = {};
 
     function loadImage(target, src) {
       var stream = client.createStream({'action':'send', 'path':src});
-      // Buffer for parts
+      /*var target_id = target.attr('id');
+      if (streams.hasOwnProperty(target_id)) {
+        streams[target_id].end();
+        delete streams[target_id];        
+      }
+      streams[target_id] = stream;
+      */// Buffer for parts
       var parts = [];
       // Got new data
       stream.on('data', function(data){
@@ -20,18 +27,21 @@
       });
       stream.on('end', function(){
         // Display new data in browser!
-        target.attr('src', (window.URL || window.webkitURL).createObjectURL(new Blob(parts)));
+        $('img', target).attr('src', (window.URL || window.webkitURL).createObjectURL(new Blob(parts)));
+        target.data('loading',false);
+        //delete streams[target_id];
       });
     }
 
     function buildTiles() {
-      console.log('Adding tiles');
+      $('.tile').remove();
 
       for (x=0; x<8; x++) {
         for (y=0; y<8; y++) {
           tile = $('<div class="tile"><img src=""/></div>');
           tile.data('x', x);
           tile.data('y', y);
+          tile.attr('id', 'tile_'+x+'_'+y)
           tile.addClass('hidden');
           $('#container').append(tile);
         }
@@ -41,6 +51,13 @@
         $(this).css('left', $(this).data('x')*256);
         $(this).css('top', $(this).data('y')*256);
       });
+
+    for (i=168; i>=0; i--) {
+      tile = $('<div class="layericon"><img src="../assets/icon_layer.svg"/></div>');
+      tile.attr('id', 'layericon'+i);
+      tile.css('top', 100+4*i);
+      $('#info').append(tile);      
+    }
 
       updateTileImages();
     }
@@ -56,7 +73,7 @@
 //          console.log('visible');
           $(this).removeClass('hidden');
           if ($('img', this).attr('src') == '') {
-            loadImage($('img', this), sprintf("/zoom%1d/slice_%04d/tile_x%04d_y%04d.20.jpg", 
+            loadImage($(this), sprintf("/zoom%1d/slice_%04d/tile_x%04d_y%04d.20.jpg", 
             $('#container').data('zoom'), $('#container').data('slice'), $(this).data('x'), $(this).data('y')));
           }
         }
@@ -77,23 +94,39 @@
 
 //      $('.tile').each( function () {
       $('.tile:not(.hidden)').each( function () {
-        loadImage($('img', this), sprintf("/zoom%1d/slice_%04d/tile_x%04d_y%04d.20.jpg", 
+        $(this).data('loading', true);
+        loadImage($(this), sprintf("/zoom%1d/slice_%04d/tile_x%04d_y%04d.20.jpg", 
           $('#container').data('zoom'), $('#container').data('slice'), $(this).data('x'), $(this).data('y')));
       });
     }
 
     function activateControls() {
       $('#container').mousewheel(function(event) {
+
+        var loading = false;
+        $('.tile').each( function() {
+          if ($(this).data('loading') == true) { loading = true; }
+        });
+
+        if (loading == true) return;
+
         var delta = event.deltaY;
         if (delta > 1) { delta = 1; }
         if (delta < -1) { delta = -1; }
         var i = $(this).data('slice')+delta;
         if (i<0) { i=0; }
-        if (i>160) { i=160; }
+        if (i>168) { i=168; }
         $(this).data('slice', i);
         updateTileImages();
         //console.log(event.deltaX, event.deltaY, event.deltaFactor);
         $('#info #slice').text($('#container').data('slice'));
+
+        $('.layericon,.active img').attr('src', "../assets/icon_layer.svg");
+        $('.layericon,.active').removeClass('active');
+        $('#layericon'+$('#container').data('slice')).addClass('active');
+
+        $('.layericon,.active img').attr('src', "../assets/icon_layer_selected.svg");
+
         event.preventDefault();
       });
 
@@ -140,7 +173,10 @@
     #info td {
       font-size: 20pt;
     }
-
+    .layericon {
+      position:absolute;
+      width:100px;
+    }
   </style>  
 </head>
 <body>
@@ -150,8 +186,8 @@
   </div>
   <div id="info">
     <table>
-      <tr><td>Slice:</td><td id="slice">10</td></tr>
-      <tr><td>Zoom:</td><td id="zoom">0</td></tr>
+      <tr><td>Slice:</td><td id="slice">10</td><td>/168</td></tr>
+      <tr><td>Zoom:</td><td id="zoom">1</td></tr>
     </table>
   </div>
 </body>
