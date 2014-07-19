@@ -6,7 +6,7 @@
   <script src="http://cdn.binaryjs.com/0/binary.js"></script>
   <script>
     // Connect to Binary.js server
-    var client = new BinaryClient('ws://localhost:9000');
+    var client = new BinaryClient('ws://107.170.14.203:9000');
 
     function loadImage(target, src) {
       var stream = client.createStream({'action':'send', 'path':src});
@@ -25,13 +25,13 @@
     function buildTiles() {
       console.log('Adding tiles');
 
-      for (x=0; x<4; x++) {
-        for (y=0; y<4; y++) {
+      for (x=0; x<8; x++) {
+        for (y=0; y<8; y++) {
           tile = $('<div class="tile"><img src=""/></div>');
           tile.data('x', x);
           tile.data('y', y);
-          //tile.addClass('hidden');
-          $('.container').append(tile);
+          tile.addClass('hidden');
+          $('#container').append(tile);
         }
       }
 
@@ -43,15 +43,36 @@
       updateTileImages();
     }
 
-    function updateTileImages() {
+    function updateVisibleTiles() {
       $('.tile').each( function () {
-        loadImage($('img', this), sprintf("/zoom%1d/slice_%04d/tile_x%04d_y%04d.80.jpg", 
-          $('.container').data('zoom'), $('.container').data('slice'), $(this).data('x'), $(this).data('y')));
+        x = parseInt($(this).css('left'));
+        y = parseInt($(this).css('top'));
+        //console.log(y<1024 && x<1024);
+        if (x < 1024 && y < 1024) {
+          $(this).removeClass('hidden');
+          if ($('img', this).attr('src') == '') {
+            loadImage($('img', this), sprintf("/zoom%1d/slice_%04d/tile_x%04d_y%04d.20.jpg", 
+            $('#container').data('zoom'), $('#container').data('slice'), $(this).data('x'), $(this).data('y')));
+          }
+        }
+        else {
+          $(this).addClass('hidden');
+          $('img', this).attr('src', '');
+        }
+      });
+    }
+
+    function updateTileImages() {
+      updateVisibleTiles();
+
+      $('.tile:not(.hidden)').each( function () {
+        loadImage($('img', this), sprintf("/zoom%1d/slice_%04d/tile_x%04d_y%04d.20.jpg", 
+          $('#container').data('zoom'), $('#container').data('slice'), $(this).data('x'), $(this).data('y')));
       });
     }
 
     function activateControls() {
-      $('.container').mousewheel(function(event) {
+      $('#container').mousewheel(function(event) {
         var delta = event.deltaY;
         if (delta > 1) { delta = 1; }
         if (delta < -1) { delta = -1; }
@@ -61,7 +82,7 @@
         $(this).data('slice', i);
         updateTileImages();
         //console.log(event.deltaX, event.deltaY, event.deltaFactor);
-        $('#info #slice').text($('.container').data('slice'));
+        $('#info #slice').text($('#container').data('slice'));
         event.preventDefault();
       });      
     }
@@ -73,39 +94,51 @@
   </script>
 
   <style>
-    .viewer {
+    #viewport {
+      margin-left: auto;
+      margin-right: auto;
+      overflow: hidden;       
       border-color: black;
-      border-width: 2pt;
+      border-width: 4pt;
       border-style: solid;
+      width: 1024px;
+      height: 1024px;      
     }
 
     .hidden {
       display: none;
     }
 
-    .container {
-      position:absolute;
-       margin-left: auto;
-       margin-right: auto;
-       width: 1060px;
-      left: 100px;
-      top: 100px;
+    #container {
+      position:relative;
+      overflow: hidden;
+      width: 1024px;
+      height: 1024px;
+      top: 300px;
     }
     .tile {
       position: absolute;
-      top: 0px;
-      left: 0px;
+      overflow: hidden;
+      width: 256px;
+      height: 256px;
     }
+
+    #info td {
+      font-size: 20pt;
+    }
+
   </style>  
 </head>
 <body>
-  <div class="viewer">
-  <div class="container" data-slice=90 data-zoom=0>
+  <div id="viewport">
+  <div id="container" data-slice=90 data-zoom=0>
   </div>
   </div>
   <div id="info">
-    <h2 id="slice">10</h2>
-    <h2 id="zoom">0</h2>
+    <table>
+      <tr><td>Slice:</td><td id="slice">10</td></tr>
+      <tr><td>Zoom:</td><td id="zoom">0</td></tr>
+    </table>
   </div>
 </body>
 </html>
