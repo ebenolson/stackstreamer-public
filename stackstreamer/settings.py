@@ -26,11 +26,20 @@ TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = []
 
+is_imageanalysis = 'eben-HP-Z420-Workstation' in os.uname()
+is_volumetric = 'volumetric' in os.uname()
+
+DATA_PATH = os.uname()
+
+if is_volumetric:
+    DATA_PATH = '/data/'
+elif is_imageanalysis:
+    DATA_PATH = '/home/eben/stackstreamer data/data/'
 
 # Application definition
 
 INSTALLED_APPS = (
-    'stacklist',
+    'stackorg',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
