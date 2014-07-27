@@ -28,14 +28,16 @@ ALLOWED_HOSTS = []
 
 is_imageanalysis = 'eben-HP-Z420-Workstation' in os.uname()
 is_volumetric = 'volumetric' in os.uname()
+is_aeolos = 'aeolos' in os.uname()
 
-DATA_PATH = os.uname()
+DATA_PATH = ''
 
 if is_volumetric:
     DATA_PATH = '/data/'
 elif is_imageanalysis:
     DATA_PATH = '/home/eben/stackstreamer data/data/'
-
+elif is_aeolos:
+    DATA_PATH = '/home/eben/torres/torres-research-webviewer/pyramid/'
 # Application definition
 
 MEDIA_PATH = DATA_PATH
