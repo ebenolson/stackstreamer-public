@@ -38,6 +38,8 @@ elif is_imageanalysis:
 
 # Application definition
 
+MEDIA_PATH = DATA_PATH
+
 INSTALLED_APPS = (
     'stackorg',
     'django.contrib.admin',
