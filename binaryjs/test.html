@@ -9,10 +9,13 @@
   <script>
     // Connect to Binary.js server
     var client = new BinaryClient('ws://107.170.14.203:9000');
+    var tiles_loading = 0;
+    var highResLoaded = false;
     //var streams = {};
 
     function loadImage(target, src) {
       var stream = client.createStream({'action':'send', 'path':src});
+      tiles_loading += 1;
       /*var target_id = target.attr('id');
       if (streams.hasOwnProperty(target_id)) {
         streams[target_id].end();
@@ -28,7 +31,10 @@
       stream.on('end', function(){
         // Display new data in browser!
         $('img', target).attr('src', (window.URL || window.webkitURL).createObjectURL(new Blob(parts)));
-        target.data('loading',false);
+        tiles_loading -= 1;
+        if (tiles_loading == 0 && !highResLoaded) {
+          loadHighresTileImages();
+        }
         //delete streams[target_id];
       });
     }
@@ -91,11 +97,18 @@
 
     function updateTileImages() {
       updateVisibleTiles();
-
-//      $('.tile').each( function () {
+      highResLoaded = false;
       $('.tile:not(.hidden)').each( function () {
-        $(this).data('loading', true);
         loadImage($(this), sprintf("/zoom%1d/slice_%04d/tile_x%04d_y%04d.20.jpg", 
+          $('#container').data('zoom'), $('#container').data('slice'), $(this).data('x'), $(this).data('y')));
+      });
+    }
+
+    function loadHighresTileImages() {
+      updateVisibleTiles();
+      highResLoaded = true;
+      $('.tile:not(.hidden)').each( function () {
+        loadImage($(this), sprintf("/zoom%1d/slice_%04d/tile_x%04d_y%04d.80.jpg", 
           $('#container').data('zoom'), $('#container').data('slice'), $(this).data('x'), $(this).data('y')));
       });
     }
@@ -103,14 +116,9 @@
     function activateControls() {
       $('#container').mousewheel(function(event) {
 
-        var loading = false;
-        $('.tile').each( function() {
-          if ($(this).data('loading') == true) { loading = true; }
-        });
-
-        if (loading == true) return;
-
+        if (tiles_loading > 0) return;
         var delta = event.deltaY;
+        console.log(delta);
         if (delta > 1) { delta = 1; }
         if (delta < -1) { delta = -1; }
         var i = $(this).data('slice')+delta;
