@@ -42,6 +42,7 @@ def cmd_import_data(update=False):
             error('Multiple entries for %s with uuid %s' % (dn, info['uuid']) )
             continue
 
+        obj.path = dn
         obj.name = dn.split('/')[-1]
         obj.pixel_size = stack_info['pixel size']
         obj.slice_spacing = stack_info['slice spacing']

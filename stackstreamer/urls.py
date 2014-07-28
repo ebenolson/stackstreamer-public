@@ -13,6 +13,8 @@ urlpatterns = patterns('',
     url(r'^$', 'stackstreamer.views.home', name='home'),
     # url(r'^blog/', include('blog.urls')),
 
+    url(r'^datapath/(?P<uuid>.+)/', 'stackstreamer.views.get_stack_data_path', name='get_stack_data_path'),
+    url(r'^verifyaccess/(?P<access_token>.+)/(?P<response_token>.+)/', 'stackstreamer.views.verify_access_token', name='verify_access_token'),
     url(r'^datalist/','stackorg.views.datalist', name='datalist'),
     url(r'^admin/', include(admin.site.urls)),
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

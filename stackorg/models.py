@@ -9,6 +9,7 @@ class Project(models.Model):
 
 class Stack(models.Model):
 	name = models.CharField(max_length=256)
+	path = models.CharField(max_length=256)
 	uuid = models.CharField(max_length=128)
 	thumbnail = models.ImageField(upload_to='thumbnails')
 	project = models.ForeignKey(Project, default=1)
