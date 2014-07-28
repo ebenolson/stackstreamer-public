@@ -10,6 +10,8 @@
   <script>
     // Connect to Binary.js server
     var client = new BinaryClient('ws://torres.stackstreamer.com:9000');
+    var controlStream;
+
     var tiles_loading = 0;
     var highResLoaded = false;
     //var streams = {};
@@ -18,33 +20,13 @@
       var url = $.url();
       var uuid = url.param('id');
       console.log(uuid);
-      client.createStream({'action':'open', 'uuid':uuid});
+      controlStream.write({'action':'open', 'uuid':uuid});
     } 
 
     function loadImage(target, src) {
-      var stream = client.createStream({'action':'send', 'path':src});
+//      controlStream.write({'action':'send', 'path':src});
+      controlStream.write({'action':'send', 'path':src, 'target':target});
       tiles_loading += 1;
-      /*var target_id = target.attr('id');
-      if (streams.hasOwnProperty(target_id)) {
-        streams[target_id].end();
-        delete streams[target_id];        
-      }
-      streams[target_id] = stream;
-      */// Buffer for parts
-      var parts = [];
-      // Got new data
-      stream.on('data', function(data){
-        parts.push(data);
-      });
-      stream.on('end', function(){
-        // Display new data in browser!
-        $('img', target).attr('src', (window.URL || window.webkitURL).createObjectURL(new Blob(parts)));
-        tiles_loading -= 1;
-        if (tiles_loading == 0 && !highResLoaded) {
-          loadHighresTileImages();
-        }
-        //delete streams[target_id];
-      });
     }
 
     function buildTiles() {
@@ -87,7 +69,7 @@
 //          console.log('visible');
           $(this).removeClass('hidden');
           if ($('img', this).attr('src') == '') {
-            loadImage($(this), sprintf("/zoom%1d/slice_%04d/tile_x%04d_y%04d.20.jpg", 
+            loadImage($(this).attr('id'), sprintf("/zoom%1d/slice_%04d/tile_x%04d_y%04d.20.jpg", 
             $('#container').data('zoom'), $('#container').data('slice'), $(this).data('x'), $(this).data('y')));
           }
         }
@@ -107,7 +89,7 @@
       updateVisibleTiles();
       highResLoaded = false;
       $('.tile:not(.hidden)').each( function () {
-        loadImage($(this), sprintf("/zoom%1d/slice_%04d/tile_x%04d_y%04d.20.jpg", 
+        loadImage($(this).attr('id'), sprintf("/zoom%1d/slice_%04d/tile_x%04d_y%04d.20.jpg", 
           $('#container').data('zoom'), $('#container').data('slice'), $(this).data('x'), $(this).data('y')));
       });
     }
@@ -116,9 +98,25 @@
       updateVisibleTiles();
       highResLoaded = true;
       $('.tile:not(.hidden)').each( function () {
-        loadImage($(this), sprintf("/zoom%1d/slice_%04d/tile_x%04d_y%04d.80.jpg", 
+        loadImage($(this).attr('id'), sprintf("/zoom%1d/slice_%04d/tile_x%04d_y%04d.80.jpg", 
           $('#container').data('zoom'), $('#container').data('slice'), $(this).data('x'), $(this).data('y')));
       });
+    }
+
+    function changeLayer(i) {
+      el = $('#container');
+      if (i<0) { i=0; }
+      if (i>168) { i=168; }
+      el.data('slice', i);
+      updateTileImages();
+      //console.log(event.deltaX, event.deltaY, event.deltaFactor);
+      $('#info #slice').text($('#container').data('slice'));
+
+      $('.layericon,.active img').attr('src', "./assets/icon_layer.svg");
+      $('.layericon,.active').removeClass('active');
+      $('#layericon'+$('#container').data('slice')).addClass('active');
+
+      $('.layericon,.active img').attr('src', "./assets/icon_layer_selected.svg");
     }
 
     function activateControls() {
@@ -126,22 +124,11 @@
 
         if (tiles_loading > 0) return;
         var delta = event.deltaY;
-        console.log(delta);
         if (delta > 1) { delta = 1; }
         if (delta < -1) { delta = -1; }
         var i = $(this).data('slice')+delta;
-        if (i<0) { i=0; }
-        if (i>168) { i=168; }
-        $(this).data('slice', i);
-        updateTileImages();
-        //console.log(event.deltaX, event.deltaY, event.deltaFactor);
-        $('#info #slice').text($('#container').data('slice'));
 
-        $('.layericon,.active img').attr('src', "./assets/icon_layer.svg");
-        $('.layericon,.active').removeClass('active');
-        $('#layericon'+$('#container').data('slice')).addClass('active');
-
-        $('.layericon,.active img').attr('src', "./assets/icon_layer_selected.svg");
+        changeLayer(i);
 
         event.preventDefault();
       });
@@ -150,9 +137,29 @@
     }
 
     client.on('open', function(){
+      controlStream = client.createStream();
+      openStack();
       buildTiles();
-      activateControls();
+      activateControls();        
     });
+
+    client.on('stream', function(stream, meta){    
+      // Buffer for parts
+      var parts = [];
+      // Got new data
+      stream.on('data', function(data){
+        parts.push(data);
+      });
+      stream.on('end', function(){
+        // Display new data in browser!
+        $('#'+meta['target']+' img').attr('src', (window.URL || window.webkitURL).createObjectURL(new Blob(parts)));
+        tiles_loading -= 1;
+        if (tiles_loading == 0 && !highResLoaded) {
+          //changeLayer(($('#container').data('slice')+1)%100);
+          loadHighresTileImages();
+        }
+      });
+    });    
   </script>
 
   <style>
