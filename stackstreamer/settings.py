@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 """
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-import os
+import os, os.path
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 
@@ -24,6 +24,12 @@ DEBUG = True
 
 TEMPLATE_DEBUG = True
 
+PROJECT_DIR = os.path.dirname(__file__) # this is not Django setting.
+TEMPLATE_DIRS = (
+    os.path.join(PROJECT_DIR, "templates"),
+)
+
+
 ALLOWED_HOSTS = []
 
 is_imageanalysis = 'eben-HP-Z420-Workstation' in os.uname()
@@ -31,16 +37,19 @@ is_volumetric = 'volumetric' in os.uname()
 is_aeolos = 'aeolos' in os.uname()
 
 DATA_PATH = ''
+MEDIA_URL='/media/'
 
 if is_volumetric:
     DATA_PATH = '/data/'
+    MEDIA_ROOT = '/web/django/data'
 elif is_imageanalysis:
     DATA_PATH = '/home/eben/stackstreamer data/data/'
+    MEDIA_ROOT = '/home/eben/stackstreamer data'
 elif is_aeolos:
     DATA_PATH = '/home/eben/torres/torres-research-webviewer/pyramid/'
+    MEDIA_ROOT = '/home/eben/torres/stackstreamer_data'
 # Application definition
 
-MEDIA_PATH = DATA_PATH
 
 INSTALLED_APPS = (
     'stackorg',
@@ -50,6 +59,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'south',
 )
 
 MIDDLEWARE_CLASSES = (

@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %} Stackstreamer - All stacks {% endblock %}
+{% block content %}
+
+<div>
+    <table class="table no-border table-striped">
+        <tr>
+            <th class="no-border">Preview</th>
+            <th class="no-border">Name</th>
+            <th class="no-border">Project</th>
+            <th class="no-border">Number of slices</th>
+        </tr>
+        {% for s in stacks %}
+        <tr>
+            <td><img src="{{s.thumbnail.url}}"/></td>
+            <td>{{s.name}}</td>
+            <td>{{s.project}}</td>
+            <td>{{s.n_slices}}</td>
+        </tr>
+        {% endfor %}
+    </table>    
+</div>
+
+{% endblock %}

@@ -8,7 +8,8 @@ class ProjectAdmin(admin.ModelAdmin):
 	fields = ('name',)
 
 class StackAdmin(admin.ModelAdmin):
-	pass
+	readonly_fields = ('thumb_tag',)
+	exclude = ('thumbnail',)
 	
 admin.site.register(Project, ProjectAdmin)
 admin.site.register(Stack, StackAdmin)

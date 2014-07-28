@@ -3,7 +3,7 @@ apt-get install virtualenv
 virtualenv venv
 source venv/bin/activate
 
-apt-get install libjpeg-dev libtiff-dev
+apt-get install libjpeg-dev libtiff-dev python-dev
 
 pip install -r requirements.txt
 
@@ -12,3 +12,4 @@ sudo apt-get update
 sudo apt-get install btsync
 
 ## DB backups go to /web/django/dbbackup # Secret: A4OGKZZNR2I53J7E6BRHUQ4X33TDMZMSC
+# image data secret: ABHZOURYR25U5JO2YF5H5IDVWNECMWZKV

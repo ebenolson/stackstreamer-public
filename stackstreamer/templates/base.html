@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+{% load url from future %}
+{% load staticfiles %}
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<title>{% block title %} Stackstreamer  {% endblock %}</title>
+<meta name="ROBOTS" content="ALL" />
+{% block extrastyle %}
+{% endblock %}
+</head>
+<body>
+<div id="wrap"> {% block nav %} {% endblock %}
+    <div id="content-main"> {% block content %}
+      {% endblock %} </div>
+</div>
+{# wrap #}
+    {% block footer %}
+<div id="footer">
+</div>
+<!-- end footer -->
+{% endblock %} {# footer #}
+
+{% block verylastscript %} {% endblock %}
+</body>
+</html>
