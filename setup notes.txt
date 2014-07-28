@@ -7,3 +7,8 @@ apt-get install libjpeg-dev libtiff-dev
 
 pip install -r requirements.txt
 
+sudo add-apt-repository ppa:tuxpoldo/btsync
+sudo apt-get update
+sudo apt-get install btsync
+
+## DB backups go to /web/django/dbbackup # Secret: A4OGKZZNR2I53J7E6BRHUQ4X33TDMZMSC
