@@ -6,12 +6,20 @@
   <script src="http://cdn.binaryjs.com/0/binary.js"></script>
   <script src="./assets/jquery.mousewheel.min.js"></script>
   <script src="./assets/sprintf.min.js"></script>
+  <script src="./assets/purl.min.js"></script>
   <script>
     // Connect to Binary.js server
     var client = new BinaryClient('ws://torres.stackstreamer.com:9000');
     var tiles_loading = 0;
     var highResLoaded = false;
     //var streams = {};
+
+    function openStack() {
+      var url = $.url();
+      var uuid = url.param('id');
+      console.log(uuid);
+      client.createStream({'action':'open', 'uuid':uuid});
+    } 
 
     function loadImage(target, src) {
       var stream = client.createStream({'action':'send', 'path':src});
