@@ -11,7 +11,7 @@ console.log('Server starting up');
 // Wait for new user connections
 server.on('connection', function(client){
     console.log('Connection: ');
-    console.log(meta);
+    console.log(client);
 	client.on('stream', function(stream, meta){
         try {
 		    var file = fs.createReadStream(DATA_ROOT + meta['path']);
