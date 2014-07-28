@@ -1,0 +1,16 @@
+{
+  "name": "stackstreamer-server",
+  "version": "0.0.1",
+  "description": "server component of stackstreamer viewer",
+  "main": "server.js",
+  "dependencies": {
+    "binaryjs": "~0.2.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "Eben Olson",
+  "license": "proprietary"
+}
