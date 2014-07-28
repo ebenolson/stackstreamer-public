@@ -8,7 +8,8 @@ var server = BinaryServer({port: 9000});
 // Wait for new user connections
 server.on('connection', function(client){
 	client.on('stream', function(stream, meta){
-//		console.log(meta);
+		console.log('Connection: ');
+        console.log(meta);
         try {
 		    var file = fs.createReadStream(DATA_ROOT + meta['path']);
         } catch (err) {
