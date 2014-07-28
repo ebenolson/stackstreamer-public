@@ -5,11 +5,14 @@ var DATA_ROOT = '/home/eben/torres/torres-research-webviewer/pyramid/breast/pyra
 var DATA_ROOT = '/data/breast/pyramid/channel1'
 // Start Binary.js server
 var server = BinaryServer({port: 9000});
+
+console.log('Server starting up');
+
 // Wait for new user connections
 server.on('connection', function(client){
+    console.log('Connection: ');
+    console.log(meta);
 	client.on('stream', function(stream, meta){
-		console.log('Connection: ');
-        console.log(meta);
         try {
 		    var file = fs.createReadStream(DATA_ROOT + meta['path']);
         } catch (err) {
