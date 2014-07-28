@@ -129,11 +129,11 @@
         //console.log(event.deltaX, event.deltaY, event.deltaFactor);
         $('#info #slice').text($('#container').data('slice'));
 
-        $('.layericon,.active img').attr('src', "../assets/icon_layer.svg");
+        $('.layericon,.active img').attr('src', "./assets/icon_layer.svg");
         $('.layericon,.active').removeClass('active');
         $('#layericon'+$('#container').data('slice')).addClass('active');
 
-        $('.layericon,.active img').attr('src', "../assets/icon_layer_selected.svg");
+        $('.layericon,.active img').attr('src', "./assets/icon_layer_selected.svg");
 
         event.preventDefault();
       });
