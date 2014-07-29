@@ -8,7 +8,7 @@ var fs = require('fs');
 var path = require('path');
 var request = require("request")
 
-var WEB_URL = 'http://torres.stackstreamer.com';
+var DJANGO_URL = 'http://torres.stackstreamer.com';
 var APP_ROOT = path.dirname(require.main.filename);
 var DATA_ROOT = '/home/eben/torres/torres-research-webviewer/pyramid/breast/pyramid/HnE';
 var DATA_ROOT = '/data/breast/pyramid/channel1';
@@ -24,14 +24,18 @@ server.on('connection', function(client){
         stream.on('data', function(data) {
             if (data['action']=='open') {
                 request({
-                    url: WEB_URL+'/datapath/'+data['uuid'],
+                    url: DJANGO_URL+'/datapath/'+data['uuid'],
                     json: true
                 }, function (error, response, body) {
                     if (!error && response.statusCode === 200) {
                         console.log(body) // Print the json response
                         if (body.result == 'success') {
                             DATA_ROOT=body.path+'/pyramid/channel1';
-                            console.log(DATA_ROOT);
+                            console.log('opening stack: '+DATA_ROOT);
+                            fs.readFile(body.path+'/info.json', 'utf8', function(err,data) {
+                                console.log('sending info');
+                                client.send(data, {'type':'info'});                               
+                            });
                         }
                     }
                 });
@@ -41,10 +45,10 @@ server.on('connection', function(client){
                 file.on('error', function (error) {
                     file.close();
                     file = fs.createReadStream(APP_ROOT+'/assets/blank.png');
-                    client.send(file, {'target':data['target']});
+                    client.send(file, {'type':'image', 'target':data['target']});
                 });
             	file.on('readable', function() {
-                    client.send(file, {'target':data['target']});
+                    client.send(file, {'type':'image', 'target':data['target']});
                 });
             }
         });
