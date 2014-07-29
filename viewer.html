@@ -12,6 +12,8 @@
     var client = new BinaryClient('ws://torres.stackstreamer.com:9000');
     var controlStream;
 
+    var info;
+
     var tiles_loading = 0;
     var highResLoaded = false;
     //var streams = {};
@@ -19,7 +21,6 @@
     function openStack() {
       var url = $.url();
       var uuid = url.param('id');
-      console.log(uuid);
       controlStream.write({'action':'open', 'uuid':uuid});
     } 
 
@@ -32,8 +33,11 @@
     function buildTiles() {
       $('.tile').remove();
 
-      for (x=0; x<8; x++) {
-        for (y=0; y<8; y++) {
+      var nx = info['tile sets'][$('#container').data('zoom')]['nx'];
+      var ny = info['tile sets'][$('#container').data('zoom')]['ny'];
+
+      for (x=0; x<nx; x++) {
+        for (y=0; y<ny; y++) {
           tile = $('<div class="tile"><img src=""/></div>');
           tile.data('x', x);
           tile.data('y', y);
@@ -85,6 +89,12 @@
       updateVisibleTiles();
     }
 
+    function updateInfo() {
+      $('#info #slice').text(sprintf("Slice %d of %d", $('#container').data('slice'), info['number of slices']));
+      var scale = Math.pow(2, $('#container').data('zoom'));
+      $('#info #zoom').text(sprintf("Scale 1 : %d", scale));     
+    }
+
     function updateTileImages() {
       updateVisibleTiles();
       highResLoaded = false;
@@ -109,8 +119,8 @@
       if (i>168) { i=168; }
       el.data('slice', i);
       updateTileImages();
+      updateInfo();
       //console.log(event.deltaX, event.deltaY, event.deltaFactor);
-      $('#info #slice').text($('#container').data('slice'));
 
       $('.layericon,.active img').attr('src', "./assets/icon_layer.svg");
       $('.layericon,.active').removeClass('active');
@@ -138,27 +148,36 @@
 
     client.on('open', function(){
       controlStream = client.createStream();
-      openStack();
-      buildTiles();
-      activateControls();        
+      openStack(); 
     });
 
-    client.on('stream', function(stream, meta){    
-      // Buffer for parts
-      var parts = [];
-      // Got new data
-      stream.on('data', function(data){
-        parts.push(data);
-      });
-      stream.on('end', function(){
-        // Display new data in browser!
-        $('#'+meta['target']+' img').attr('src', (window.URL || window.webkitURL).createObjectURL(new Blob(parts)));
-        tiles_loading -= 1;
-        if (tiles_loading == 0 && !highResLoaded) {
-          //changeLayer(($('#container').data('slice')+1)%100);
-          loadHighresTileImages();
-        }
-      });
+    client.on('stream', function(stream, meta){
+      if (meta['type'] == 'image') {    
+        // Buffer for parts
+        var parts = [];
+        // Got new data
+        stream.on('data', function(data){
+          parts.push(data);
+        });
+        stream.on('end', function(){
+          // Display new data in browser!
+          $('#'+meta['target']+' img').attr('src', (window.URL || window.webkitURL).createObjectURL(new Blob(parts)));
+          tiles_loading -= 1;
+          if (tiles_loading == 0 && !highResLoaded) {
+            //changeLayer(($('#container').data('slice')+1)%100);
+            loadHighresTileImages();
+          }
+        });
+      }
+      if (meta['type'] == 'info') {
+        stream.on('data', function(data){         
+          console.log('received info');
+          info = $.parseJSON(data);
+          updateInfo();
+          buildTiles();
+          activateControls();       
+        });
+      }
     });    
   </script>
 
@@ -209,8 +228,8 @@
   </div>
   <div id="info">
     <table>
-      <tr><td>Slice:</td><td id="slice">1</td><td>/168</td></tr>
-      <tr><td>Zoom:</td><td id="zoom">1</td></tr>
+      <tr><td id="slice"></td></tr>
+      <tr><td id="zoom"></td></tr>
     </table>
   </div>
 </body>
