@@ -12,7 +12,7 @@
         </tr>
         {% for s in stacks %}
         <tr>
-            <td><img src="{{s.thumbnail.url}}"/></td>
+            <td><a href="{{VIEWER_URL}}?id={{s.uuid}}"><img src="{{s.thumbnail.url}}"/></a></td>
             <td>{{s.name}}</td>
             <td>{{s.project}}</td>
             <td>{{s.n_slices}}</td>
