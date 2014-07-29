@@ -14,6 +14,8 @@
 
     var info;
 
+    var rmb = false;
+
     var tiles_loading = 0;
     var highResLoaded = false;
     //var streams = {};
@@ -51,15 +53,15 @@
         $(this).css('left', $(this).data('x')*256);
         $(this).css('top', $(this).data('y')*256);
       });
-
-    for (i=168; i>=0; i--) {
-      tile = $('<div class="layericon"><img src="./assets/icon_layer.svg"/></div>');
-      tile.attr('id', 'layericon'+i);
-      tile.css('top', 100+4*i);
-      $('#info').append(tile);      
     }
 
-      updateTileImages();
+    function buildInfo() {
+      for (i=info['number of slices']-1; i>=0; i--) {
+        tile = $('<div class="layericon"><img src="./assets/icon_layer.svg"/></div>');
+        tile.attr('id', 'layericon'+i);
+        tile.css('top', 100+800*i/info['number of slices']);
+        $('#info').append(tile);      
+      }      
     }
 
     function updateVisibleTiles() {
@@ -90,9 +92,15 @@
     }
 
     function updateInfo() {
-      $('#info #slice').text(sprintf("Slice %d of %d", $('#container').data('slice'), info['number of slices']));
+      $('#info #slice').text(sprintf("Slice %d of %d", $('#container').data('slice')+1, info['number of slices']));
       var scale = Math.pow(2, $('#container').data('zoom'));
-      $('#info #zoom').text(sprintf("Scale 1 : %d", scale));     
+      $('#info #zoom').text(sprintf("Scale 1 : %d", scale));
+
+      $('.layericon,.active img').attr('src', "./assets/icon_layer.svg");
+      $('.layericon,.active').removeClass('active');
+      $('#layericon'+$('#container').data('slice')).addClass('active');
+
+      $('.layericon,.active img').attr('src', "./assets/icon_layer_selected.svg");           
     }
 
     function updateTileImages() {
@@ -113,35 +121,55 @@
       });
     }
 
+    function changeZoom(i) {
+      el = $('#container');
+      if (i<0) { i=0; }
+      if (i>info['tile sets'].length-1) { i = info['tile sets'].length-1; }
+      el.data('zoom', i);
+      buildTiles();     
+      updateTileImages();
+      updateInfo();      
+    }
+
     function changeLayer(i) {
       el = $('#container');
       if (i<0) { i=0; }
-      if (i>168) { i=168; }
+      if (i>info['number of slices']-1) { i = info['number of slices']-1; }
       el.data('slice', i);
       updateTileImages();
       updateInfo();
       //console.log(event.deltaX, event.deltaY, event.deltaFactor);
-
-      $('.layericon,.active img').attr('src', "./assets/icon_layer.svg");
-      $('.layericon,.active').removeClass('active');
-      $('#layericon'+$('#container').data('slice')).addClass('active');
-
-      $('.layericon,.active img').attr('src', "./assets/icon_layer_selected.svg");
     }
 
     function activateControls() {
       $('#container').mousewheel(function(event) {
-
-        if (tiles_loading > 0) return;
         var delta = event.deltaY;
         if (delta > 1) { delta = 1; }
         if (delta < -1) { delta = -1; }
-        var i = $(this).data('slice')+delta;
 
-        changeLayer(i);
-
+        if (rmb == true) {
+          var i = $(this).data('zoom')+delta;
+          changeZoom(i);
+        }
+        else {
+  //        if (tiles_loading > 0) return;
+          var i = $(this).data('slice')+delta;
+          changeLayer(i);
+        }
         event.preventDefault();
       });
+
+      $('#container').mousedown(function(event) {
+        if (event.which==3) {
+          rmb = true;
+        }
+      });
+
+      $('#container').mouseup(function(event) {
+        if (event.which==3) {
+          rmb = false;
+        }
+      });      
 
       $('#container').draggable({ drag: dragUpdate});
     }
@@ -175,12 +203,21 @@
           info = $.parseJSON(data);
           updateInfo();
           buildTiles();
+          buildInfo();
+          changeLayer(parseInt(info['number of slices']/2));
           activateControls();       
         });
       }
-    });    
-  </script>
+    });
 
+  </script>
+<script type="text/javascript" language="javascript">
+        $(function() {
+            $(this).bind("contextmenu", function(e) {
+                e.preventDefault();
+            });
+        }); 
+    </script>
   <style>
     #viewport {
       margin-left: auto;
