@@ -21,4 +21,4 @@ def list_all_stacks(request):
     stacks = Stack.objects.all()
     # View code here...
     return render(request, 'list.html', {"stacks": stacks, 'VIEWER_URL':settings.VIEWER_URL}, 
-        content_type="application/xhtml+xml")
+        content_type="text/html")

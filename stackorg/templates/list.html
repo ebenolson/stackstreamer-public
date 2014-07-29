@@ -1,24 +1,41 @@
 {% extends "base.html" %}
 {% block title %} Stackstreamer - All stacks {% endblock %}
-{% block content %}
 
-<div>
+{% block extrastyle %}
+table .btn{
+  margin-top: 2pt;
+  margin-bottom: 2pt;
+  margin-right: -3px;
+}
+{% endblock %}
+
+{% block content %}
     <table class="table no-border table-striped">
         <tr>
             <th class="no-border">Preview</th>
-            <th class="no-border">Name</th>
-            <th class="no-border">Project</th>
-            <th class="no-border">Number of slices</th>
+            <th class="no-border">Metadata</th>
+            <th class="no-border">Notes</th>
+            <th class="no-border">Actions</th>
+
         </tr>
         {% for s in stacks %}
         <tr>
-            <td><a href="{{VIEWER_URL}}?id={{s.uuid}}"><img src="{{s.thumbnail.url}}"/></a></td>
-            <td>{{s.name}}</td>
-            <td>{{s.project}}</td>
-            <td>{{s.n_slices}}</td>
+            <td><img src="{{s.thumbnail.url}}"/></td>
+            <td><table class="table table-bordered table-condensed">
+                <tr><td>Name:</td><td>{{s.name}}</td></tr>
+                <tr><td>Project:</td><td>{{s.project}}</td></tr>
+                <tr><td>Number of slices:</td><td>{{s.n_slices}}</td></tr>
+                <tr><td>Slice spacing:</td><td>{{s.slice_spacing}}</td></tr>
+                <tr><td>Dimensions:</td><td>{{s.pixel_width}} x {{s.pixel_height}}</td></tr>
+                <tr><td>Pixel size:</td><td>{{s.pixel_size}} &micro</td></tr>
+            </table></td>
+            <td></td>
+            <td><table>
+                <tr><td><a class="btn btn-lg btn-primary" href="{{VIEWER_URL}}?id={{s.uuid}}" role="button">Launch viewer</a></td></tr>
+                <tr><td><a class="btn btn-lg btn-default" href="{% url 'admin:stackorg_stack_change' s.id %}" role="button">Edit metadata</a></td></tr>
+                </table>
+            </td>
         </tr>
         {% endfor %}
     </table>    
-</div>
-
 {% endblock %}
