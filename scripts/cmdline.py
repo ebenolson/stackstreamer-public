@@ -56,13 +56,17 @@ def cmd_import_data(update=False):
             obj.pixel_height = ts['ny']*stack_info['tile size']
         obj.n_slices = stack_info['number of slices']
 
-        pil_image_obj = Image.open(dn+'/thumb.png')
+	try:
+            pil_image_obj = Image.open(dn+'/thumb.png')
+        except:
+            pil_image_obj = Image.open(dn+'/thumb.jpg')
+
         f = StringIO()
         try:
             pil_image_obj.save(f, format='png')
             s = f.getvalue()
             obj.thumbnail.save('/thumbnails/'+obj.uuid+'.png', ContentFile(s))
-            warn('/thumbnails/'+obj.uuid+'.png')
+            info('/thumbnails/'+obj.uuid+'.png')
         finally:
             f.close()
 
