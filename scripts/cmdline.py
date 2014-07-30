@@ -21,7 +21,10 @@ def cmd_import_data(update=False):
 
     for dn in dns:
         dbg(dn)
-        stack_info = json.load(open(dn+'/info.json'))
+        try:
+	    stack_info = json.load(open(dn+'/info.json'))
+        except:
+            continue	
         if 'uuid' not in stack_info:
             info('adding uuid')
             stack_info['uuid'] = str(uuid.uuid4())
