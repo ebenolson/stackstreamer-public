@@ -64,7 +64,23 @@
       }      
     }
 
-    function updateVisibleTiles() {
+    function preloadBordering() {
+      if (!highResLoaded) return;
+      var x0 = parseInt($('#container').css('left'));
+      var y0 = parseInt($('#container').css('top'));
+      $('.tile').each( function () {
+        var x = x0 + parseInt($(this).css('left'));
+        var y = y0 + parseInt($(this).css('top'));
+        if (x > 0-256*4 && y > 0-256*4 && x < 1024+256*3 && y < 1024+256*3) {
+          if ($('img', this).attr('src') == '') {
+            loadImage($(this).attr('id'), sprintf("/zoom%1d/slice_%04d/tile_x%04d_y%04d.20.jpg", 
+            $('#container').data('zoom'), $('#container').data('slice'), $(this).data('x'), $(this).data('y')));
+          }
+        }
+      });
+    }
+
+    function updateVisibleTiles() {     
       var x0 = parseInt($('#container').css('left'));
       var y0 = parseInt($('#container').css('top'));
       $('.tile').each( function () {
@@ -82,13 +98,14 @@
         else {
 //          console.log('hidden');
           $(this).addClass('hidden');
-          $('img', this).attr('src', '');
+//          $('img', this).attr('src', '');
         }
       });
     }
 
     function dragUpdate(event, ui) {
       updateVisibleTiles();
+      preloadBordering();     
     }
 
     function updateInfo() {
@@ -136,6 +153,11 @@
       if (i<0) { i=0; }
       if (i>info['number of slices']-1) { i = info['number of slices']-1; }
       el.data('slice', i);
+
+      $('.tile').each( function () {
+        $('img', this).attr('src','');
+      });
+
       updateTileImages();
       updateInfo();
       //console.log(event.deltaX, event.deltaY, event.deltaFactor);
