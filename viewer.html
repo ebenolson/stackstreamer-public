@@ -13,6 +13,9 @@
     var controlStream;
 
     var info;
+    var TILESIZE = 256;
+    var VIEWPORTW = 1024;
+    var VIEWPORTH = 1024;
 
     var rmb = false;
 
@@ -81,31 +84,46 @@
     }
 
     function updateVisibleTiles() {     
-      var x0 = parseInt($('#container').css('left'));
-      var y0 = parseInt($('#container').css('top'));
+      var x0 = -parseInt($('#container').css('left'));
+      var y0 = -parseInt($('#container').css('top'));
+
+      var nxmin = Math.floor(x0/TILESIZE)-1;
+      var nymin = Math.floor(y0/TILESIZE)-1;
+      var nxmax = Math.ceil(x0/TILESIZE+VIEWPORTW/TILESIZE)+1;
+      var nymax = Math.ceil(y0/TILESIZE+VIEWPORTH/TILESIZE)+1;
+      console.log(nxmin);
+      console.log(nxmax);
+      console.log(nymin);
+      console.log(nymax);
       $('.tile').each( function () {
-        var x = x0 + parseInt($(this).css('left'));
-        var y = y0 + parseInt($(this).css('top'));
-        //console.log(y<1024 && x<1024);
-        if (x > 0-256*1.5 && y > 0-256*1.5 && x < 1024+256*0.5 && y < 1024+256*0.5) {
-//          console.log('visible');
-          $(this).removeClass('hidden');
-          if ($('img', this).attr('src') == '') {
-            loadImage($(this).attr('id'), sprintf("/zoom%1d/slice_%04d/tile_x%04d_y%04d.20.jpg", 
-            $('#container').data('zoom'), $('#container').data('slice'), $(this).data('x'), $(this).data('y')));
-          }
-        }
-        else {
-//          console.log('hidden');
-          $(this).addClass('hidden');
-//          $('img', this).attr('src', '');
+        var nx = $(this).data('x');
+        var ny = $(this).data('y');
+        if (nx < nxmin || nx > nxmax || ny < nymin || ny > nymax) {
+          $(this).remove();
         }
       });
+
+      for (var i=nxmin; i<=nxmax; i++) {
+        for (var j=nymin; j<=nymax; j++) {
+          if ($('div.tile#tile_'+i+'_'+j).length != 1) {
+            tile = $('<div class="tile"><img src=""/></div>');
+            tile.data('x', i);
+            tile.data('y', j);
+            tile.attr('id', 'tile_'+i+'_'+j)
+            //tile.addClass('hidden');
+            tile.css('left', tile.data('x')*256);
+            tile.css('top', tile.data('y')*256);          
+            $('#container').append(tile);
+            loadImage(tile.attr('id'), sprintf("/zoom%1d/slice_%04d/tile_x%04d_y%04d.20.jpg", 
+            $('#container').data('zoom'), $('#container').data('slice'), tile.data('x'), tile.data('y')));                        
+          }
+        }
+      }
     }
 
     function dragUpdate(event, ui) {
       updateVisibleTiles();
-      preloadBordering();     
+      //preloadBordering();     
     }
 
     function updateInfo() {
@@ -122,11 +140,11 @@
 
     function updateTileImages() {
       updateVisibleTiles();
-      highResLoaded = false;
-      $('.tile:not(.hidden)').each( function () {
-        loadImage($(this).attr('id'), sprintf("/zoom%1d/slice_%04d/tile_x%04d_y%04d.20.jpg", 
-          $('#container').data('zoom'), $('#container').data('slice'), $(this).data('x'), $(this).data('y')));
-      });
+//      highResLoaded = false;
+//      $('.tile:not(.hidden)').each( function () {
+//        loadImage($(this).attr('id'), sprintf("/zoom%1d/slice_%04d/tile_x%04d_y%04d.20.jpg", 
+//          $('#container').data('zoom'), $('#container').data('slice'), $(this).data('x'), $(this).data('y')));
+//      });
     }
 
     function loadHighresTileImages() {
@@ -155,10 +173,11 @@
       el.data('slice', i);
 
       $('.tile').each( function () {
-        $('img', this).attr('src','');
+        loadImage($(this).attr('id'), sprintf("/zoom%1d/slice_%04d/tile_x%04d_y%04d.20.jpg", 
+        $('#container').data('zoom'), $('#container').data('slice'), $(this).data('x'), $(this).data('y')));           
       });
-
-      updateTileImages();
+      updateVisibleTiles();
+      //updateTileImages();
       updateInfo();
       //console.log(event.deltaX, event.deltaY, event.deltaFactor);
     }
@@ -215,7 +234,7 @@
           tiles_loading -= 1;
           if (tiles_loading == 0 && !highResLoaded) {
             //changeLayer(($('#container').data('slice')+1)%100);
-            loadHighresTileImages();
+            //loadHighresTileImages();
           }
         });
       }
@@ -224,7 +243,7 @@
           console.log('received info');
           info = $.parseJSON(data);
           updateInfo();
-          buildTiles();
+          //buildTiles();
           buildInfo();
           changeLayer(parseInt(info['number of slices']/2));
           activateControls();       
