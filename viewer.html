@@ -58,6 +58,13 @@
       });
     }
 
+    function buildViewer() {
+      var nx = info['tile sets'][$('#container').data('zoom')]['nx'];
+      var ny = info['tile sets'][$('#container').data('zoom')]['ny'];
+      $('#container').css('width', nx*TILESIZE);
+      $('#container').css('height', ny*TILESIZE);      
+    }
+
     function buildInfo() {
       for (i=info['number of slices']-1; i>=0; i--) {
         tile = $('<div class="layericon"><img src="./assets/icon_layer.svg"/></div>');
@@ -87,14 +94,14 @@
       var x0 = -parseInt($('#container').css('left'));
       var y0 = -parseInt($('#container').css('top'));
 
-      var nxmin = Math.floor(x0/TILESIZE)-1;
-      var nymin = Math.floor(y0/TILESIZE)-1;
-      var nxmax = Math.ceil(x0/TILESIZE+VIEWPORTW/TILESIZE)+1;
-      var nymax = Math.ceil(y0/TILESIZE+VIEWPORTH/TILESIZE)+1;
-      console.log(nxmin);
-      console.log(nxmax);
-      console.log(nymin);
-      console.log(nymax);
+      var nxmin = Math.max(0, Math.floor(x0/TILESIZE)-1);
+      var nymin = Math.max(0, Math.floor(y0/TILESIZE)-1);
+      var nxmax = Math.min(info['tile sets'][$('#container').data('zoom')]['nx'], Math.ceil(x0/TILESIZE+VIEWPORTW/TILESIZE)+1);
+      var nymax = Math.min(info['tile sets'][$('#container').data('zoom')]['ny'], Math.ceil(y0/TILESIZE+VIEWPORTH/TILESIZE)+1);
+      console.log(nxmin, nxmax);
+      //console.log(nxmax);
+      //console.log(nymin);
+      //console.log(nymax);
       $('.tile').each( function () {
         var nx = $(this).data('x');
         var ny = $(this).data('y');
@@ -156,12 +163,37 @@
       });
     }
 
-    function changeZoom(i) {
+    function changeZoom(zoom, event) {
       el = $('#container');
-      if (i<0) { i=0; }
-      if (i>info['tile sets'].length-1) { i = info['tile sets'].length-1; }
-      el.data('zoom', i);
-      buildTiles();     
+      oldzoom = el.data('zoom');
+
+      if (zoom<0) { zoom=0; }
+      if (zoom>info['tile sets'].length-1) { zoom = info['tile sets'].length-1; }
+
+      if (zoom == oldzoom) return;
+      
+      var parentOffset = $('#viewport').offset(); 
+   //or $(this).offset(); if you really just want the current element's offset
+      var mouseX = event.pageX - parentOffset.left;
+      var mouseY = event.pageY - parentOffset.top;
+      oldContainerX = parseInt(el.css('left'));
+      oldContainerY = parseInt(el.css('top'));      
+      newContainerX = mouseX - (mouseX - oldContainerX) * Math.pow(2, oldzoom-zoom);
+      newContainerY = mouseY - (mouseY - oldContainerY) * Math.pow(2, oldzoom-zoom);
+      el.css('left', newContainerX);
+      el.css('top', newContainerY);
+      console.log(mouseX, mouseY);
+      console.log(oldContainerX, oldContainerY);
+      console.log(newContainerX, newContainerY);      
+      el.data('zoom', zoom);
+
+      var nx = info['tile sets'][$('#container').data('zoom')]['nx'];
+      var ny = info['tile sets'][$('#container').data('zoom')]['ny'];
+      $('#container').css('width', nx*TILESIZE);
+      $('#container').css('height', ny*TILESIZE);      
+
+      //buildTiles();     
+      $('.tile').remove();
       updateTileImages();
       updateInfo();      
     }
@@ -190,7 +222,7 @@
 
         if (rmb == true) {
           var i = $(this).data('zoom')+delta;
-          changeZoom(i);
+          changeZoom(i, event);
         }
         else {
   //        if (tiles_loading > 0) return;
@@ -245,6 +277,7 @@
           updateInfo();
           //buildTiles();
           buildInfo();
+          buildViewer();
           changeLayer(parseInt(info['number of slices']/2));
           activateControls();       
         });
