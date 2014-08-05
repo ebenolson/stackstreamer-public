@@ -26,14 +26,7 @@ img.thumb {
 {% endblock %}
 
 {% block content %}
-    <table class="table no-border table-striped stickytable">
-        <tr>
-            <th class="no-border">Preview</th>
-            <th class="no-border">Metadata</th>
-            <th class="no-border">Notes</th>
-            <th class="no-border">Actions</th>
-
-        </tr>
+    <table class="table no-border table-striped">
         {% for s in stacks %}
         <tr>
             <td><div class="thumb"><img class="thumb" src="{{s.thumbnail.url}}"/></div></td>
@@ -48,6 +41,7 @@ img.thumb {
             <td></td>
             <td><table>
                 <tr><td><a class="btn btn-lg btn-primary" href="{{VIEWER_URL}}?id={{s.uuid}}" role="button">Launch viewer</a></td></tr>
+                <tr><td><a class="btn btn-lg btn-default" href="{% url 'admin:stackorg_stack_change' s.id %}" role="button">Sample notes</a></td></tr>
                 <tr><td><a class="btn btn-lg btn-default" href="{% url 'admin:stackorg_stack_change' s.id %}" role="button">Edit metadata</a></td></tr>
                 </table>
             </td>

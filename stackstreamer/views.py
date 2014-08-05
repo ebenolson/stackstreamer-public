@@ -14,7 +14,6 @@ import hashlib
 from django.contrib import messages
 
 def login_user(request):
-    """Logs in an admin user, redirecting to the dashboard"""
     if request.POST:
           username = request.POST.get('username')
           password = request.POST.get('password')
@@ -40,10 +39,9 @@ def logout_user(request):
     logout(request)
     return redirect('/')
 
+@login_required(login_url="/login/")
 def home(request):
-    html = "<html><body>Welcome to StackStreamer</body></html>"
-    return HttpResponse(html)
-
+    return redirect('list_all_stacks')
 
 def get_stack_data_path(request, uuid):
     response_data = {}
