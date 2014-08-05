@@ -1,7 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate, login, logout
 
 from stackstreamer import settings
 from stackorg.models import Stack
@@ -9,6 +10,35 @@ from stackorg.models import Stack
 import os, os.path
 import json
 import hashlib
+
+from django.contrib import messages
+
+def login_user(request):
+    """Logs in an admin user, redirecting to the dashboard"""
+    if request.POST:
+          username = request.POST.get('username')
+          password = request.POST.get('password')
+
+          user = authenticate(username=username, password=password)
+
+          if user is not None:
+              if user.is_active:
+                  login(request, user)
+                  return redirect('list_all_stacks')
+              else:
+                  # do something because user was not active
+                  messages.add_message(request, messages.ERROR, 'User Inactive')
+                  return render(request, 'login.html')
+          else:
+               # password/username combination was wrong
+               messages.add_message(request, messages.ERROR, 'Invalid Credentials')
+               return render(request, 'login.html')
+    else:
+        return render(request, 'login.html')
+
+def logout_user(request):
+    logout(request)
+    return redirect('/')
 
 def home(request):
     html = "<html><body>Welcome to StackStreamer</body></html>"

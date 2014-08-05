@@ -6,11 +6,27 @@ table .btn{
   margin-top: 2pt;
   margin-bottom: 2pt;
   margin-right: -3px;
+
 }
+div.thumb{
+    width:270px;
+    height:270px;
+    display: table-cell;
+    vertical-align: middle;
+    background-color:white;
+      border-color: gray;
+      border-width: 1pt;
+      border-style: solid;
+}
+img.thumb {
+    display: block;
+    margin-left: auto;
+    margin-right: auto }
+
 {% endblock %}
 
 {% block content %}
-    <table class="table no-border table-striped">
+    <table class="table no-border table-striped stickytable">
         <tr>
             <th class="no-border">Preview</th>
             <th class="no-border">Metadata</th>
@@ -20,7 +36,7 @@ table .btn{
         </tr>
         {% for s in stacks %}
         <tr>
-            <td><img src="{{s.thumbnail.url}}"/></td>
+            <td><div class="thumb"><img class="thumb" src="{{s.thumbnail.url}}"/></div></td>
             <td><table class="table table-bordered table-condensed">
                 <tr><td>Name:</td><td>{{s.name}}</td></tr>
                 <tr><td>Project:</td><td>{{s.project}}</td></tr>
@@ -37,5 +53,8 @@ table .btn{
             </td>
         </tr>
         {% endfor %}
-    </table>    
+    </table>
+{% endblock %}
+
+{% block lastscript %}
 {% endblock %}
