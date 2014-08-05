@@ -285,7 +285,7 @@
           updateInfo();
           //buildTiles();
           buildInfo();
-          buildViewer(parseInt(info['number of slices'])/2, 0);
+          buildViewer(parseInt(info['number of slices'])/2, info['tile sets'].length-1);
           changeLayer(parseInt(info['number of slices']/2));
           activateControls();       
         });
