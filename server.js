@@ -45,10 +45,10 @@ server.on('connection', function(client){
                 file.on('error', function (error) {
                     file.close();
                     file = fs.createReadStream(APP_ROOT+'/assets/blank.png');
-                    client.send(file, {'type':'image', 'target':data['target']});
+                    client.send(file, {'type':'image', 'src':data['path'], 'target':data['target']});
                 });
             	file.on('readable', function() {
-                    client.send(file, {'type':'image', 'target':data['target']});
+                    client.send(file, {'type':'image', 'src':data['path'], 'target':data['target']});
                 });
             }
         });
