@@ -22,11 +22,10 @@ img.thumb {
     display: block;
     margin-left: auto;
     margin-right: auto }
-
 {% endblock %}
 
 {% block content %}
-    <table class="table no-border table-striped">
+    <table class="table ">
         {% for s in stacks %}
         <tr>
             <td><div class="thumb"><img class="thumb" src="{{s.thumbnail.url}}"/></div></td>
@@ -38,17 +37,12 @@ img.thumb {
                 <tr><td>Dimensions:</td><td>{{s.pixel_width}} x {{s.pixel_height}}</td></tr>
                 <tr><td>Pixel size:</td><td>{{s.pixel_size}} &micro</td></tr>
             </table></td>
-            <td></td>
             <td><table>
                 <tr><td><a class="btn btn-lg btn-primary" href="{{VIEWER_URL}}?id={{s.uuid}}" role="button">Launch viewer</a></td></tr>
-                <tr><td><a class="btn btn-lg btn-default" href="{% url 'admin:stackorg_stack_change' s.id %}" role="button">Sample notes</a></td></tr>
                 <tr><td><a class="btn btn-lg btn-default" href="{% url 'admin:stackorg_stack_change' s.id %}" role="button">Edit metadata</a></td></tr>
                 </table>
             </td>
         </tr>
         {% endfor %}
-    </table>
-{% endblock %}
-
-{% block lastscript %}
+    </table>    
 {% endblock %}
