@@ -276,6 +276,7 @@
             //changeLayer(($('#container').data('slice')+1)%100);
             loadHighresTileImages();
           }
+          stream.destroy();
         });
       }
       if (meta['type'] == 'info') {
