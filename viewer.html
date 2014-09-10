@@ -9,13 +9,13 @@
   <script src="./assets/purl.min.js"></script>
   <script>
     // Connect to Binary.js server
-    var client = new BinaryClient('ws://127.0.0.1:9000');
+    var client = new BinaryClient('ws://torres.stackstreamer.com:9000');
     var controlStream;
 
     var info;
     var TILESIZE = 256;
-    var VIEWPORTW = 1024;
-    var VIEWPORTH = 1024;
+    var VIEWPORTW = $(window).width();
+    var VIEWPORTH = $(window).height();
 
     var rmb = false;
 
@@ -67,6 +67,10 @@
       var ny = info['tile sets'][zoom]['ny'];
       $('#container').css('width', nx*TILESIZE);
       $('#container').css('height', ny*TILESIZE);
+
+      $('#viewport').css('width', VIEWPORTW);
+      $('#viewport').css('height', VIEWPORTH);
+
       return el;      
     }
 
@@ -86,7 +90,7 @@
       $('.tile').each( function () {
         var x = x0 + parseInt($(this).css('left'));
         var y = y0 + parseInt($(this).css('top'));
-        if (x > 0-256*4 && y > 0-256*4 && x < 1024+256*3 && y < 1024+256*3) {
+        if (x > 0-TILESIZE*4 && y > 0-TILESIZE*4 && x < VIEWPORTW+TILESIZE*3 && y < VIEWPORTH+TILESIZE*3) {
           if ($('img', this).attr('src') == '') {
             loadImage($(this).attr('id'), sprintf("/zoom%1d/slice_%04d/tile_x%04d_y%04d.20.jpg", 
             $('#container').data('zoom'), $('#container').data('slice'), $(this).data('x'), $(this).data('y')));
@@ -302,6 +306,9 @@
         }); 
     </script>
   <style>
+    body {
+      overflow: hidden;
+    }
     #viewport {
       margin-left: auto;
       margin-right: auto;
@@ -309,8 +316,6 @@
       border-color: black;
       border-width: 4pt;
       border-style: solid;
-      width: 1024px;
-      height: 1024px;
     }
 
     .hidden {
