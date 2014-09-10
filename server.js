@@ -4,7 +4,7 @@
   });
 */
 var BinaryServer = require('binaryjs').BinaryServer;
-var fs = require('fs');
+var fs = require('graceful-fs');
 var path = require('path');
 var request = require("request")
 
@@ -34,7 +34,8 @@ server.on('connection', function(client){
                             console.log('opening stack: '+DATA_ROOT);
                             fs.readFile(body.path+'/info.json', 'utf8', function(err,data) {
                                 console.log('sending info');
-                                client.send(data, {'type':'info'});                               
+                                client.send(data, {'type':'info'});
+				console.log(data);
                             });
                         }
                     }
