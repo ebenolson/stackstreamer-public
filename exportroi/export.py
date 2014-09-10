@@ -15,9 +15,11 @@ def export_full_slice(uuid, slice):
     try:
         stack = Stack.objects.get(uuid=uuid)
     except ObjectDoesNotExist, MultipleObjectsReturned:
+        dbg('uuid not found')
         return False
 
     if slice > stack.n_slices-1:
+        dbg('bad slice number')
         return False
 
     try:
@@ -42,6 +44,6 @@ def export_full_slice(uuid, slice):
             im = Image.open(stack.path+'/pyramid/channel1/zoom0/slice_%04d/tile_x%04d_y%04d.80.jpg'%(slice, i, j))
             oim[j*TS:(j+1)*TS, i*TS:(i+1)*TS, :] = np.array(im)
 
-    fn = settings.MEDIA_ROOT+'/export/%s_layer_%04d.png'%(uuid,slice)
-    Image.fromarray(oim).save(fn)
-    return fn
+    fn = 'export/%s_layer_%04d.png'%(uuid,slice)
+    Image.fromarray(oim).save(settings.MEDIA_ROOT+fn)
+    return settings.MEDIA_URL+fn

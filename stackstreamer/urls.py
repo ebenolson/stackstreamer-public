@@ -10,6 +10,7 @@ admin.autodiscover()
 urlpatterns = patterns('',
     # Examples:
     url(r'', include('stackorg.urls')),
+    url(r'', include('exportroi.urls')),
     url(r'^$', 'stackstreamer.views.home', name='home'),
     # url(r'^blog/', include('blog.urls')),
 

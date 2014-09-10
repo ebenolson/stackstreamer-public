@@ -44,13 +44,13 @@ MEDIA_URL='/media/'
 
 if is_volumetric:
     DATA_PATH = '/data/'
-    MEDIA_ROOT = '/web/django/data'
+    MEDIA_ROOT = '/web/django/data/'
 elif is_imageanalysis:
     DATA_PATH = '/home/eben/stackstreamer data/data/'
-    MEDIA_ROOT = '/home/eben/stackstreamer data'
+    MEDIA_ROOT = '/home/eben/stackstreamer data/'
 elif is_aeolos:
     DATA_PATH = '/home/eben/torres/torres-research-webviewer/pyramid/'
-    MEDIA_ROOT = '/home/eben/torres/stackstreamer_data'
+    MEDIA_ROOT = '/home/eben/torres/stackstreamer_data/'
 # Application definition
 
 INSTALLED_APPS = (
