@@ -2,6 +2,7 @@
 <head>
   <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
   <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
   <script src="//code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
   <script src="http://cdn.binaryjs.com/0/binary.js"></script>
   <script src="./assets/jquery.mousewheel.min.js"></script>
@@ -62,7 +63,7 @@
       el = $('<div id="container" data-slice=1 data-zoom=0></div>');
       el.data('zoom', zoom);
       el.data('slice',slice);
-      $('#viewport').append(el);
+      $('#viewport').prepend(el);
       var nx = info['tile sets'][zoom]['nx'];
       var ny = info['tile sets'][zoom]['ny'];
       $('#container').css('width', nx*TILESIZE);
@@ -256,6 +257,10 @@
       });      
 
       $('#container').draggable({ drag: dragUpdate});
+
+      $('#snapshotbutton').click(function() {
+        $('a#snapshotbutton').attr('href','/export/fullslice/7a6e377e-ba80-4756-a857-a23c177722e2/100').attr('download',true);
+      });
     }
 
     client.on('open', function(){
@@ -312,10 +317,20 @@
     #viewport {
       margin-left: auto;
       margin-right: auto;
-      overflow: hidden;       
+      overflow: hidden;
+      position: absolute;
+      top: 0px;
+      left: 0px;       
       border-color: black;
       border-width: 4pt;
       border-style: solid;
+
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      -khtml-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
     }
 
     .hidden {
@@ -340,6 +355,15 @@
       height: 4096px;
     }
 
+    #info {
+      margin-left: auto;
+      margin-right: auto;
+      
+      position: absolute;
+      top: 0px;
+      left: 0px;           
+    }
+
     .tile {
       position: absolute;
       overflow: hidden;
@@ -353,17 +377,33 @@
     .layericon {
       position:absolute;
       width:100px;
+      left:50px;
     }
+
+    #snapshotbutton {
+      color:black;
+      position:absolute;
+      right:100px;
+      top:100px;
+    }
+     a#snapshotbutton:hover {
+      color:blue;
+    }
+
   </style>  
 </head>
 <body>
   <div id="viewport">
-  </div>
+
   <div id="info">
     <table>
       <tr><td id="slice"></td></tr>
       <tr><td id="zoom"></td></tr>
     </table>
   </div>
+  <a id="snapshotbutton"><i class="fa fa-camera fa-4x"></i></a>
+
+  </div>  
+
 </body>
 </html>
