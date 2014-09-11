@@ -14,9 +14,30 @@ import hashlib
 
 @login_required
 def export_full_slice(request, uuid, slice):
-   # View code here...
-   print uuid, slice
-   fn = exportroi.export.export_full_slice(uuid, int(slice))
-   dbg(fn)
-   print(fn)
-   return redirect(fn)
+    # View code here...
+    print uuid, slice
+    fn = exportroi.export.export_full_slice(uuid, int(slice))
+    dbg(fn)
+    print(fn)
+    return redirect(fn)
+
+@login_required
+def export_snapshot(request, uuid, slice, zoom, x0, y0, x1, y1):
+    # View code here...
+    try:
+        x0 = int(x0)
+        y0 = int(y0)
+        x1 = int(x1)
+        y1 = int(y1)
+        zoom = int(zoom)
+        slice = int(slice)
+    except ValueError:
+        return HttpResponse(status=400)
+
+    fn = exportroi.export.export_snapshot(uuid, slice, zoom, x0, y0, x1, y1)
+    dbg(fn)
+    print(fn)
+    if not fn:
+        return HttpResponse(status=400)
+    else:
+        return redirect(fn)
