@@ -75,6 +75,16 @@
       return el;      
     }
 
+    function goHome() {
+      console.log('going home');
+      changeZoom(info['tile sets'].length-1,false);
+      changeLayer(parseInt(info['number of slices']/2));    
+      var el = $('#container');
+      console.log('changing pos');
+      el.css('left', parseInt(el.css('width'))/2);
+      el.css('top', parseInt(el.css('height'))/2);
+    }
+
     function buildInfo() {
       for (i=info['number of slices']-1; i>=0; i--) {
         tile = $('<div class="layericon"><img src="./assets/icon_layer.svg"/></div>');
@@ -183,8 +193,14 @@
       
       var parentOffset = $('#viewport').offset(); 
    //or $(this).offset(); if you really just want the current element's offset
-      var mouseX = event.pageX - parentOffset.left;
-      var mouseY = event.pageY - parentOffset.top;
+      if (event == false) {
+        var mouseX = 0;
+        var mouseY = 0;
+      }
+      else {
+        var mouseX = event.pageX - parentOffset.left;
+        var mouseY = event.pageY - parentOffset.top;
+      }
       oldContainerX = parseInt(el.css('left'));
       oldContainerY = parseInt(el.css('top'));      
       newContainerX = mouseX - (mouseX - oldContainerX) * Math.pow(2, oldzoom-zoom);
@@ -215,7 +231,7 @@
       if (i>info['number of slices']-1) { i = info['number of slices']-1; }
       el.data('slice', i);
 
-      $('.tile').each( function () {
+      el.children('.tile').each( function () {
         $(this).removeClass('highres');
         loadImage($(this).attr('id'), sprintf("/zoom%1d/slice_%04d/tile_x%04d_y%04d.20.jpg", 
         $('#container').data('zoom'), $('#container').data('slice'), $(this).data('x'), $(this).data('y')));           
@@ -260,8 +276,10 @@
       $('#container').draggable({ drag: dragUpdate});
 
       $('#snapshotbutton').click(function() {
-        $('a#snapshotbutton').attr('href','/export/fullslice/7a6e377e-ba80-4756-a857-a23c177722e2/100').attr('download',true);
+        $('a#snapshotbutton').attr('href','/export/fullslice/7a6e377e-ba80-4756-a857-a23c177722e2/100').attr('download','snapshot.png');
       });
+
+      $('#homebutton').click(goHome);
     }
 
     client.on('open', function(){
@@ -294,10 +312,10 @@
           console.log('received info');
           info = $.parseJSON(data);
           updateInfo();
-          //buildTiles();
+          //buildTiles();         
           buildInfo();
           buildViewer(parseInt(info['number of slices'])/2, info['tile sets'].length-1);
-          changeLayer(parseInt(info['number of slices']/2));
+          goHome();
           activateControls();       
         });
       }
@@ -381,13 +399,18 @@
       left:50px;
     }
 
-    #snapshotbutton {
+    .buttonbar {
       color:black;
       position:absolute;
-      right:100px;
-      top:100px;
+      width:50pt;
+      right:50pt;
+      top:100pt;
     }
-     a#snapshotbutton:hover {
+
+    #snapshotbutton {
+    }
+
+    .buttonbar a:hover {
       color:blue;
     }
 
@@ -402,8 +425,45 @@
       <tr><td id="zoom"></td></tr>
     </table>
   </div>
-  <a id="snapshotbutton"><i class="fa fa-camera fa-4x"></i></a>
-
+  <div class="buttonbar">
+    <a id="questionbutton">
+      <span class="fa-stack fa-2x fa-lg">
+        <i class="fa fa-circle fa-stack-2x"></i>
+        <i class="fa fa-question fa-inverse fa-stack-1x"></i>
+      </span>
+    </a>
+    <a id="homebutton">
+      <span class="fa-stack fa-2x fa-lg">
+        <i class="fa fa-circle fa-stack-2x"></i>
+        <i class="fa fa-home fa-inverse fa-stack-1x"></i>
+      </span>
+    </a>
+    <a id="arrowbutton">
+      <span class="fa-stack fa-2x fa-lg">
+        <i class="fa fa-circle fa-stack-2x"></i>
+        <i class="fa fa-location-arrow fa-inverse fa-stack-1x"></i>
+      </span>
+    </a>
+    <a id="flagbutton">
+      <span class="fa-stack fa-2x fa-lg">
+        <i class="fa fa-circle fa-stack-2x"></i>
+        <i class="fa fa-flag fa-inverse fa-stack-1x"></i>
+      </span>
+    </a>
+    <a id="snapshotbutton">
+      <span class="fa-stack fa-2x fa-lg">
+        <i class="fa fa-circle fa-stack-2x"></i>
+        <i class="fa fa-camera fa-inverse fa-stack-1x"></i>
+      </span>
+    </a>
+    <a id="exportbutton">
+      <span class="fa-stack fa-2x fa-lg">
+        <i class="fa fa-circle fa-stack-2x"></i>
+        <i class="fa fa-download fa-inverse fa-stack-1x"></i>
+      </span>
+    </a>
+  </div>
+  
   </div>  
 
 </body>
