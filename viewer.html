@@ -242,6 +242,10 @@
       //console.log(event.deltaX, event.deltaY, event.deltaFactor);
     }
 
+    function toggleInfo() {
+      $('.info').toggleClass('hidden');
+    }
+
     function activateControls() {
       $('#container').mousewheel(function(event) {
         var delta = event.deltaY;
@@ -280,6 +284,13 @@
       });
 
       $('#homebutton').click(goHome);
+      $('#hideinfobutton').click(toggleInfo);
+
+      $(document).keyup(function(e) {
+        if (e.keyCode == 27) { 
+          toggleInfo();
+        }
+      });
     }
 
     client.on('open', function(){
@@ -407,6 +418,10 @@
       top:100pt;
     }
 
+    .disabledbutton {
+      color:gray;
+    }
+
     #snapshotbutton {
     }
 
@@ -419,14 +434,14 @@
 <body>
   <div id="viewport">
 
-  <div id="info">
+  <div id="info" class="info">
     <table>
       <tr><td id="slice"></td></tr>
       <tr><td id="zoom"></td></tr>
     </table>
   </div>
-  <div class="buttonbar">
-    <a id="questionbutton">
+  <div class="buttonbar info">
+    <a id="questionbutton" class="disabledbutton">
       <span class="fa-stack fa-2x fa-lg">
         <i class="fa fa-circle fa-stack-2x"></i>
         <i class="fa fa-question fa-inverse fa-stack-1x"></i>
@@ -438,13 +453,13 @@
         <i class="fa fa-home fa-inverse fa-stack-1x"></i>
       </span>
     </a>
-    <a id="arrowbutton">
+    <a id="arrowbutton" class="disabledbutton">
       <span class="fa-stack fa-2x fa-lg">
         <i class="fa fa-circle fa-stack-2x"></i>
         <i class="fa fa-location-arrow fa-inverse fa-stack-1x"></i>
       </span>
     </a>
-    <a id="flagbutton">
+    <a id="flagbutton" class="disabledbutton">
       <span class="fa-stack fa-2x fa-lg">
         <i class="fa fa-circle fa-stack-2x"></i>
         <i class="fa fa-flag fa-inverse fa-stack-1x"></i>
@@ -456,12 +471,18 @@
         <i class="fa fa-camera fa-inverse fa-stack-1x"></i>
       </span>
     </a>
-    <a id="exportbutton">
+    <a id="exportbutton" class="disabledbutton">
       <span class="fa-stack fa-2x fa-lg">
         <i class="fa fa-circle fa-stack-2x"></i>
         <i class="fa fa-download fa-inverse fa-stack-1x"></i>
       </span>
     </a>
+    <a id="hideinfobutton">
+      <span class="fa-stack fa-2x fa-lg">
+        <i class="fa fa-circle fa-stack-2x"></i>
+        <i class="fa fa-arrows-alt fa-inverse fa-stack-1x"></i>
+      </span>
+    </a>    
   </div>
   
   </div>  
