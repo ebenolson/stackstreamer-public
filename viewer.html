@@ -244,17 +244,18 @@
         event.preventDefault();
       });
 
-      $('#container').mousedown(function(event) {
-        if (event.which==3) {
-          rmb = true;
+      $('#container').mouseup(function(event) {
+        if (event.originalEvent.detail === 2) { 
+          if (event.which === 3) { // right-click
+            var i = $(this).data('zoom')+1;
+            changeZoom(i, event);
+          } 
+          if (event.which === 1) { // right-click
+            var i = $(this).data('zoom')-1;
+            changeZoom(i, event);
+          } 
         }
       });
-
-      $('#container').mouseup(function(event) {
-        if (event.which==3) {
-          rmb = false;
-        }
-      });      
 
       $('#container').draggable({ drag: dragUpdate});
 
