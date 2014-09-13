@@ -56,6 +56,8 @@ elif is_aeolos:
 INSTALLED_APPS = (
     'stackstreamer',
     'stackorg',
+    'annotations',
+    'tastypie',
     'django_admin_bootstrapped.bootstrap3',
     'django_admin_bootstrapped',    
     'django.contrib.admin',

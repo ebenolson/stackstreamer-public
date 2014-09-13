@@ -2,15 +2,23 @@ from django.conf.urls import patterns, include, url
 import settings
 from django.conf.urls.static import static
 
+from tastypie.api import Api
+from api.resources import StackResource, FlagResource
+
 import stackorg.views
 
 from django.contrib import admin
 admin.autodiscover()
 
+v1_api = Api(api_name='v1')
+v1_api.register(StackResource())
+v1_api.register(FlagResource())
+
 urlpatterns = patterns('',
     # Examples:
     url(r'', include('stackorg.urls')),
     url(r'', include('exportroi.urls')),
+    url(r'', include('annotations.urls')),
     url(r'^$', 'stackstreamer.views.home', name='home'),
     # url(r'^blog/', include('blog.urls')),
 
@@ -20,4 +28,5 @@ urlpatterns = patterns('',
     url(r'^login/$', 'stackstreamer.views.login_user', name='login'),
     url(r'^logout/$', 'stackstreamer.views.logout_user', name='logout'),
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^api/', include(v1_api.urls)),
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
