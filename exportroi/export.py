@@ -46,7 +46,7 @@ def export_full_slice(stackid, slice):
 
     fn = 'export/%s_layer_%04d.png'%(uuid,slice)
     Image.fromarray(oim).save(settings.MEDIA_ROOT+fn)
-    return settings.MEDIA_URL+fn
+    return fn
 
 def export_snapshot(stackid, slice, zoom, x0, y0, x1, y1):
     try:
@@ -92,4 +92,4 @@ def export_snapshot(stackid, slice, zoom, x0, y0, x1, y1):
 
     fn = 'export/%s.png'%uuid.uuid4()
     Image.fromarray(oim).save(settings.MEDIA_ROOT+fn)
-    return settings.MEDIA_URL+fn    
+    return fn

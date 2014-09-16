@@ -1,25 +1,38 @@
 from django.db import models
 import datetime
 
+from sorl.thumbnail import ImageField
+
+from django.core.files import File 
+
 from stackorg.models import Stack
+from exportroi.export import export_snapshot
+
+from stackstreamer import settings
+
 # Create your models here.
 
 class Annotation(models.Model):
-    name = models.CharField(max_length=256, blank=True)
-    thumbnail = models.ImageField(upload_to='thumbnails', blank=True)
+    name = models.CharField(max_length=256, default='Untitled')
+    thumbnail = ImageField(upload_to='thumbnails', blank=True)
     stack = models.ForeignKey(Stack, default=1)
     date_created = models.DateField(default=datetime.date.today)
     description = models.TextField(blank=True)
     pixel_x = models.FloatField(default=0)
     pixel_y = models.FloatField(default=0)
     layer = models.IntegerField(default=0)
+    zoom = models.IntegerField(default=0)
 
     def __unicode__(self):
         return self.name    
-    def thumb_tag(self):
-        return u'<img src="%s" />' % self.thumbnail.url
-    thumb_tag.short_description = 'Thumbnail'
-    thumb_tag.allow_tags = True
+
+    def save(self, *args, **kwargs):
+        if not self.thumbnail:
+            fn = export_snapshot(self.stack.uuid, self.layer, self.zoom, 
+                self.pixel_x/2.0**self.zoom-400, self.pixel_y/2.0**self.zoom-400, 
+                self.pixel_x/2.0**self.zoom+400, self.pixel_y/2.0**self.zoom+400)
+            self.thumbnail.save(fn, File(open(settings.MEDIA_ROOT+fn,'rb')))
+        super(Annotation, self).save(*args, **kwargs)
 
 class Flag(Annotation):
     pass

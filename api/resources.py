@@ -1,5 +1,7 @@
 from tastypie.resources import ModelResource
 from tastypie import fields
+from tastypie.resources import ALL, ALL_WITH_RELATIONS
+
 from tastypie.authorization import DjangoAuthorization
 
 from annotations.models import Flag
@@ -9,6 +11,7 @@ class StackResource(ModelResource):
     class Meta:
         queryset = Stack.objects.all()
         allowed_methods = ['get']
+        filtering = {'uuid':ALL}
         authorization = DjangoAuthorization()
 
 class FlagResource(ModelResource):

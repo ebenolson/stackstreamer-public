@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% load thumbnail %}
+
+{% block extrastyle %}
+.flag {text-align:center; float:left; padding-top:10px; padding-bottom:10px;position:relative}
+
+.flag_name {float:left; padding:3px; position:absolute; bottom:10pt; left:4pt;}
+
+.flag_delete {right: 2pt; float:right; padding:3px; position:absolute; top:10pt;}
+.flag_delete a {color:black;}
+.flag_delete a:hover {color:red;}
+{% endblock %}
+
+{% block content %}
+<div>
+    <table class="table ">
+        {% for flag in flags %}
+        <tr><td>
+        <div class="flag">
+            {% thumbnail flag.thumbnail "150x150" crop="center" as im %}
+                <img src="{{ im.url }}" width="{{ im.width }}" height="{{ im.height }}">
+            {% endthumbnail %}
+            <div class="flag_name">
+                <span class="label label-primary">{{flag.name}}</span>
+            </div>
+            <div class="flag_delete">
+                <a href={% url 'delete_flag' id=flag.id %}>
+                <span class="fa-stack">
+                    <i class="fa fa-circle fa-inverse fa-stack-2x"></i>
+                    <i class="fa fa-times-circle fa-stack-2x"></i>
+                </span>
+                </a>
+            </div>
+        </td></tr>
+        {% endfor %}
+    </table>    
+</div>
+{% endblock %}

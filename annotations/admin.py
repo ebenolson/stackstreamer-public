@@ -1,12 +1,14 @@
 from django.contrib import admin
 
+from sorl.thumbnail.admin import AdminImageMixin
+
 from models import Flag, Arrow
 # Register your models here.
 
-class FlagAdmin(admin.ModelAdmin):
+class FlagAdmin(AdminImageMixin, admin.ModelAdmin):
     list_display = ('name',)
 
-class ArrowAdmin(admin.ModelAdmin):
+class ArrowAdmin(AdminImageMixin, admin.ModelAdmin):
     list_display = ('name',)
 
 admin.site.register(Flag, FlagAdmin)
