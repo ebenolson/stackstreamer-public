@@ -1,0 +1,106 @@
+body {
+  overflow: hidden;
+}
+#viewport {
+  margin-left: auto;
+  margin-right: auto;
+  overflow: hidden;
+  position: absolute;
+  top: 0px;
+  left: 0px;       
+  border-color: black;
+  border-width: 4pt;
+  border-style: solid;
+
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.hidden {
+  display: none;
+}
+
+#container {
+  position:relative;
+  overflow: hidden;
+  top: 300px;
+  left: 0px;
+  width: 4096px;
+  height: 4096px;
+}
+
+.oldcontainer {
+  position:relative;
+  overflow: hidden;
+  top: 300px;
+  left: 0px;
+  width: 4096px;
+  height: 4096px;
+}
+
+#info {
+  margin-left: auto;
+  margin-right: auto;
+  
+  position: absolute;
+  top: 0px;
+  left: 0px;           
+}
+
+.tile {
+  position: absolute;
+  overflow: hidden;
+  width: 256px;
+  height: 256px;
+}
+
+#info td {
+  font-size: 20pt;
+}
+.layericon {
+  position:absolute;
+  width:100px;
+  left:50px;
+}
+
+.buttonbar {
+  color:black;
+  position:absolute;
+  width:50pt;
+  right:50pt;
+  top:100pt;
+}
+
+.flagbar {
+  position:absolute;
+  width:50pt;
+  left:50pt;
+  top:100pt;
+}
+
+
+.buttonbar a {
+  color:inherit;
+}
+
+a.disabledbutton {
+  color:gray;
+}
+
+.buttonbar a:hover {
+  color:blue;
+}
+
+.flag {text-align:center; float:left; padding-top:10px; padding-bottom:10px;position:relative}
+
+.flag_name {float:left; padding:3px; position:absolute; bottom:10pt; left:4pt;}
+
+.flag_delete {right: 2pt; float:right; padding:3px; position:absolute; top:10pt;}
+.flag_delete a {color:black;}
+.flag_delete a:hover {
+    color:red;
+}

@@ -2,15 +2,6 @@
 <head>
   <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
   <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">
-  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
-  <link href="./assets/viewer.css" rel="stylesheet">
-
-    <!-- Bootstrap core CSS -->
-  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
-
-
-
   <script src="//code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
   <script src="http://cdn.binaryjs.com/0/binary.js"></script>
   <script src="./assets/jquery.mousewheel.min.js"></script>
@@ -23,8 +14,8 @@
 
     var info;
     var TILESIZE = 256;
-    var VIEWPORTW = $(window).width();
-    var VIEWPORTH = $(window).height();
+    var VIEWPORTW = 1024;
+    var VIEWPORTH = 1024;
 
     var rmb = false;
 
@@ -71,26 +62,12 @@
       el = $('<div id="container" data-slice=1 data-zoom=0></div>');
       el.data('zoom', zoom);
       el.data('slice',slice);
-      $('#viewport').prepend(el);
+      $('#viewport').append(el);
       var nx = info['tile sets'][zoom]['nx'];
       var ny = info['tile sets'][zoom]['ny'];
       $('#container').css('width', nx*TILESIZE);
       $('#container').css('height', ny*TILESIZE);
-
-      $('#viewport').css('width', VIEWPORTW);
-      $('#viewport').css('height', VIEWPORTH);
-
       return el;      
-    }
-
-    function goHome() {
-      console.log('going home');
-      changeZoom(info['tile sets'].length-1,false);
-      changeLayer(parseInt(info['number of slices']/2));    
-      var el = $('#container');
-      console.log('changing pos');
-      el.css('left', parseInt(el.css('width'))/2);
-      el.css('top', parseInt(el.css('height'))/2);
     }
 
     function buildInfo() {
@@ -109,7 +86,7 @@
       $('.tile').each( function () {
         var x = x0 + parseInt($(this).css('left'));
         var y = y0 + parseInt($(this).css('top'));
-        if (x > 0-TILESIZE*4 && y > 0-TILESIZE*4 && x < VIEWPORTW+TILESIZE*3 && y < VIEWPORTH+TILESIZE*3) {
+        if (x > 0-256*4 && y > 0-256*4 && x < 1024+256*3 && y < 1024+256*3) {
           if ($('img', this).attr('src') == '') {
             loadImage($(this).attr('id'), sprintf("/zoom%1d/slice_%04d/tile_x%04d_y%04d.20.jpg", 
             $('#container').data('zoom'), $('#container').data('slice'), $(this).data('x'), $(this).data('y')));
@@ -201,14 +178,8 @@
       
       var parentOffset = $('#viewport').offset(); 
    //or $(this).offset(); if you really just want the current element's offset
-      if (event == false) {
-        var mouseX = 0;
-        var mouseY = 0;
-      }
-      else {
-        var mouseX = event.pageX - parentOffset.left;
-        var mouseY = event.pageY - parentOffset.top;
-      }
+      var mouseX = event.pageX - parentOffset.left;
+      var mouseY = event.pageY - parentOffset.top;
       oldContainerX = parseInt(el.css('left'));
       oldContainerY = parseInt(el.css('top'));      
       newContainerX = mouseX - (mouseX - oldContainerX) * Math.pow(2, oldzoom-zoom);
@@ -239,7 +210,7 @@
       if (i>info['number of slices']-1) { i = info['number of slices']-1; }
       el.data('slice', i);
 
-      el.children('.tile').each( function () {
+      $('.tile').each( function () {
         $(this).removeClass('highres');
         loadImage($(this).attr('id'), sprintf("/zoom%1d/slice_%04d/tile_x%04d_y%04d.20.jpg", 
         $('#container').data('zoom'), $('#container').data('slice'), $(this).data('x'), $(this).data('y')));           
@@ -248,57 +219,6 @@
       //updateTileImages();
       updateInfo();
       //console.log(event.deltaX, event.deltaY, event.deltaFactor);
-    }
-
-    function toggleInfo() {
-      $('.info').toggleClass('hidden');
-    }
-
-    function saveSnapshot() {
-      var x0, x1, y0, y1;
-      x0 = -$('#container').offset().left;
-      x1 = x0+$(window).width();
-      y0 = -$('#container').offset().top;
-      y1 = y0+$(window).height();
-      var url = sprintf('/export/snapshot/%s/%d/%d/%d/%d/%d/%d', info['uuid'], $('#container').data('slice'), $('#container').data('zoom'), x0, y0, x1, y1);
-      console.log(url);
-      $('a#snapshotbutton').attr('href',url).attr('download','snapshot.png');
-    }
-
-    function saveFlag() {
-      var x = $(window).width()/2-$('#container').offset().left;
-      x = x*Math.pow(2, $('#container').data('zoom'));
-      var y = $(window).height()/2-$('#container').offset().top;
-      y = y*Math.pow(2, $('#container').data('zoom'));
-      console.log(x, y);
-      var data = JSON.stringify({"pixel_x":x,
-              "pixel_y":y,
-              "layer":$('#container').data('slice'),
-              "stack":"/api/v1/stack/"+info.id+'/',
-              "zoom":$('#container').data('zoom'),
-              });
-
-      $.ajax ({
-                url: '/api/v1/flag/?format=json',
-                type: "POST",
-                data: data,
-                dataType: "json",
-                contentType: "application/json; charset=utf-8",
-                complete: loadFlagBar,
-              }
-      );
-    }    
-
-    function loadFlagBar() {
-      console.log('loading flags');
-      $('#flagbar').load('/flags/list/', function() {
-        $('.flag a').click( function() {
-          console.log(this.target);
-          $.get(this.target, function() {
-            loadFlagBar();
-          });
-        });
-      });
     }
 
     function activateControls() {
@@ -319,33 +239,19 @@
         event.preventDefault();
       });
 
-      $('#container').mouseup(function(event) {
-        if (event.originalEvent.detail === 2) { 
-          if (event.which === 3) { // right-click
-            var i = $(this).data('zoom')+1;
-            changeZoom(i, event);
-          } 
-          if (event.which === 1) { // right-click
-            var i = $(this).data('zoom')-1;
-            changeZoom(i, event);
-          } 
+      $('#container').mousedown(function(event) {
+        if (event.which==3) {
+          rmb = true;
         }
       });
+
+      $('#container').mouseup(function(event) {
+        if (event.which==3) {
+          rmb = false;
+        }
+      });      
 
       $('#container').draggable({ drag: dragUpdate});
-
-      $('#flagbutton').click(saveFlag);
-      $('#snapshotbutton').click(saveSnapshot);
-        //$('a#snapshotbutton').attr('href','/export/fullslice/7a6e377e-ba80-4756-a857-a23c177722e2/100').attr('download','snapshot.png');
-
-      $('#homebutton').click(goHome);
-      $('#hideinfobutton').click(toggleInfo);
-
-      $(document).keyup(function(e) {
-        if (e.keyCode == 27) { 
-          toggleInfo();
-        }
-      });
     }
 
     client.on('open', function(){
@@ -370,24 +276,17 @@
             //changeLayer(($('#container').data('slice')+1)%100);
             loadHighresTileImages();
           }
-          stream.destroy();
         });
       }
       if (meta['type'] == 'info') {
         stream.on('data', function(data){         
           console.log('received info');
           info = $.parseJSON(data);
-
-          var url = sprintf('/api/v1/stack/?uuid=%s', info['uuid']);
-          $.getJSON( url, function( data ) { 
-            info.id = data.objects[0].id;
-          });
-
           updateInfo();
-          //buildTiles();         
+          //buildTiles();
           buildInfo();
           buildViewer(parseInt(info['number of slices'])/2, info['tile sets'].length-1);
-          goHome();
+          changeLayer(parseInt(info['number of slices']/2));
           activateControls();       
         });
       }
@@ -401,64 +300,64 @@
             });
         }); 
     </script>
+  <style>
+    #viewport {
+      margin-left: auto;
+      margin-right: auto;
+      overflow: hidden;       
+      border-color: black;
+      border-width: 4pt;
+      border-style: solid;
+      width: 1024px;
+      height: 1024px;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    #container {
+      position:relative;
+      overflow: hidden;
+      top: 300px;
+      left: 0px;
+      width: 4096px;
+      height: 4096px;
+    }
+
+    .oldcontainer {
+      position:relative;
+      overflow: hidden;
+      top: 300px;
+      left: 0px;
+      width: 4096px;
+      height: 4096px;
+    }
+
+    .tile {
+      position: absolute;
+      overflow: hidden;
+      width: 256px;
+      height: 256px;
+    }
+
+    #info td {
+      font-size: 20pt;
+    }
+    .layericon {
+      position:absolute;
+      width:100px;
+    }
+  </style>  
 </head>
 <body>
   <div id="viewport">
-
-
-  <div id="info" class="info">
+  </div>
+  <div id="info">
     <table>
       <tr><td id="slice"></td></tr>
       <tr><td id="zoom"></td></tr>
     </table>
   </div>
-  <div class="buttonbar info">
-    <a id="questionbutton" class="disabledbutton">
-      <span class="fa-stack fa-2x fa-lg">
-        <i class="fa fa-circle fa-stack-2x"></i>
-        <i class="fa fa-question fa-inverse fa-stack-1x"></i>
-      </span>
-    </a>
-    <a id="homebutton">
-      <span class="fa-stack fa-2x fa-lg">
-        <i class="fa fa-circle fa-stack-2x"></i>
-        <i class="fa fa-home fa-inverse fa-stack-1x"></i>
-      </span>
-    </a>
-    <a id="arrowbutton" class="disabledbutton">
-      <span class="fa-stack fa-2x fa-lg">
-        <i class="fa fa-circle fa-stack-2x"></i>
-        <i class="fa fa-location-arrow fa-inverse fa-stack-1x"></i>
-      </span>
-    </a>
-    <a id="flagbutton" class="disabledbutton">
-      <span class="fa-stack fa-2x fa-lg">
-        <i class="fa fa-circle fa-stack-2x"></i>
-        <i class="fa fa-flag fa-inverse fa-stack-1x"></i>
-      </span>
-    </a>
-    <a id="snapshotbutton">
-      <span class="fa-stack fa-2x fa-lg">
-        <i class="fa fa-circle fa-stack-2x"></i>
-        <i class="fa fa-camera fa-inverse fa-stack-1x"></i>
-      </span>
-    </a>
-    <a id="exportbutton" class="disabledbutton">
-      <span class="fa-stack fa-2x fa-lg">
-        <i class="fa fa-circle fa-stack-2x"></i>
-        <i class="fa fa-download fa-inverse fa-stack-1x"></i>
-      </span>
-    </a>
-    <a id="hideinfobutton">
-      <span class="fa-stack fa-2x fa-lg">
-        <i class="fa fa-circle fa-stack-2x"></i>
-        <i class="fa fa-arrows-alt fa-inverse fa-stack-1x"></i>
-      </span>
-    </a>    
-  </div>
-  <div id="flagbar" class="flagbar"></div>
-  
-  </div>  
-
 </body>
 </html>
