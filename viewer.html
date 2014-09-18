@@ -18,7 +18,7 @@
   <script src="./assets/purl.min.js"></script>
   <script>
     // Connect to Binary.js server
-    var client = new BinaryClient('ws://torres.stackstreamer.com:9000');
+    var client;
     var controlStream;
 
     var info;
@@ -27,7 +27,7 @@
     var VIEWPORTH = $(window).height();
 
     var rmb = false;
-
+    var stack_opened = false;
     var tiles_loading = 0;
     var highResLoaded = false;
     //var streams = {};
@@ -36,6 +36,7 @@
       var url = $.url();
       var uuid = url.param('id');
       controlStream.write({'action':'open', 'uuid':uuid});
+      stack_opened = true;
     } 
 
     function loadImage(target, src) {
@@ -348,51 +349,61 @@
       });
     }
 
-    client.on('open', function(){
-      controlStream = client.createStream();
-      openStack(); 
-    });
+    function connectToServer() {
+      client = new BinaryClient('ws://relay1.stackstreamer.com:9000');
+      client.on('close', function() {
+        console.log('Websocket connection closed, reopening');
+        connectToServer();
+      });
 
-    client.on('stream', function(stream, meta){
-      if (meta['type'] == 'image') {    
-        // Buffer for parts
-        var parts = [];
-        // Got new data
-        stream.on('data', function(data){
-          parts.push(data);
-        });
-        stream.on('end', function(){
-          // Display new data in browser!
-          $('#'+meta['target']+' img').attr('src', (window.URL || window.webkitURL).createObjectURL(new Blob(parts)));
-          tiles_loading -= 1;
-          if (tiles_loading == 0) {
-            $('.oldcontainer').remove();
-            //changeLayer(($('#container').data('slice')+1)%100);
-            loadHighresTileImages();
-          }
-          stream.destroy();
-        });
-      }
-      if (meta['type'] == 'info') {
-        stream.on('data', function(data){         
-          console.log('received info');
-          info = $.parseJSON(data);
+      client.on('open', function(){
+        controlStream = client.createStream();
+        if (stack_opened == false) openStack(); 
+      });
 
-          var url = sprintf('/api/v1/stack/?uuid=%s', info['uuid']);
-          $.getJSON( url, function( data ) { 
-            info.id = data.objects[0].id;
+      client.on('stream', function(stream, meta){
+        if (meta['type'] == 'image') {    
+          // Buffer for parts
+          var parts = [];
+          // Got new data
+          stream.on('data', function(data){
+            parts.push(data);
           });
+          stream.on('end', function(){
+            // Display new data in browser!
+            $('#'+meta['target']+' img').attr('src', (window.URL || window.webkitURL).createObjectURL(new Blob(parts)));
+            tiles_loading -= 1;
+            if (tiles_loading == 0) {
+              $('.oldcontainer').remove();
+              //changeLayer(($('#container').data('slice')+1)%100);
+              loadHighresTileImages();
+            }
+            stream.destroy();
+          });
+        }
+        if (meta['type'] == 'info') {
+          stream.on('data', function(data){         
+            console.log('received info');
+            info = $.parseJSON(data);
 
-          updateInfo();
-          //buildTiles();         
-          buildInfo();
-          buildViewer(parseInt(info['number of slices'])/2, info['tile sets'].length-1);
-          goHome();
-          activateControls();       
-        });
-      }
-    });
+            var url = sprintf('/api/v1/stack/?uuid=%s', info['uuid']);
+            $.getJSON( url, function( data ) { 
+              info.id = data.objects[0].id;
+            });
 
+            updateInfo();
+            //buildTiles();         
+            buildInfo();
+            buildViewer(parseInt(info['number of slices'])/2, info['tile sets'].length-1);
+            goHome();
+            activateControls();       
+          });
+        }
+      });
+
+    }
+
+    connectToServer();
   </script>
 <script type="text/javascript" language="javascript">
         $(function() {
