@@ -38,11 +38,15 @@ ALLOWED_HOSTS = []
 is_imageanalysis = 'eben-HP-Z420-Workstation' in os.uname()
 is_volumetric = 'volumetric' in os.uname()
 is_aeolos = 'aeolos' in os.uname()
+is_stackstreamer = 'stackstreamer' in os.uname()
 
 DATA_PATH = ''
 MEDIA_URL='/media/'
 
-if is_volumetric:
+if is_stackstreamer:
+    DATA_PATH = '/data/'
+    MEDIA_ROOT = '/web/django/media/'
+elif is_volumetric:
     DATA_PATH = '/data/'
     MEDIA_ROOT = '/web/django/data/'
 elif is_imageanalysis:
