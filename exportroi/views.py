@@ -40,4 +40,4 @@ def export_snapshot(request, uuid, slice, zoom, x0, y0, x1, y1):
     if not fn:
         return HttpResponse(status=400)
     else:
-        return redirect(settings.MEDIA_PATH+fn)
+        return redirect(settings.MEDIA_URL+fn)

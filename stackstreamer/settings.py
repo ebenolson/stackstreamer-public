@@ -20,7 +20,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 SECRET_KEY = '2i$3o(9&o4z45^=h#eml*u)34yv=z!22y8db9^c5(r5*bvb22o'
 
 VIEWER_SECRET_KEY = 'r2o4rRGWnOhH8Nm38rAAE2F8DZztHpOHVOUSOouUw+M'
-VIEWER_URL = 'http://torres.stackstreamer.com/viewer/viewer.html'
+VIEWER_URL = 'http://relay1.stackstreamer.com/viewer/viewer.html'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True

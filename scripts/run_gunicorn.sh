@@ -1,9 +1,9 @@
 #!/bin/bash
 set -e 
-LOGFILE=/web/logs/gunicorn.log 
+LOGFILE=/home/app/logs/gunicorn.log 
 LOGDIR=$(dirname $LOGFILE)
 NUM_WORKERS=2 
-USER=django 
+USER=app 
 GROUP=web ADDRESS=127.0.0.1:8000
 
 cd /web/django/stackstreamer
