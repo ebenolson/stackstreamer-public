@@ -20,7 +20,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 SECRET_KEY = '2i$3o(9&o4z45^=h#eml*u)34yv=z!22y8db9^c5(r5*bvb22o'
 
 VIEWER_SECRET_KEY = 'r2o4rRGWnOhH8Nm38rAAE2F8DZztHpOHVOUSOouUw+M'
-VIEWER_URL = 'http://torres.stackstreamer.com/viewer/viewer.html'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -35,10 +34,10 @@ TEMPLATE_DIRS = (
 
 ALLOWED_HOSTS = []
 
-is_imageanalysis = 'eben-HP-Z420-Workstation' in os.uname()
 is_volumetric = 'volumetric' in os.uname()
 is_aeolos = 'aeolos' in os.uname()
 is_stackstreamer = 'stackstreamer' in os.uname()
+is_test = 'test' in os.uname()
 
 DATA_PATH = ''
 MEDIA_URL='/media/'
@@ -46,9 +45,11 @@ MEDIA_URL='/media/'
 if is_stackstreamer:
     DATA_PATH = '/data/'
     MEDIA_ROOT = '/web/django/media/'
-elif is_volumetric:
+    VIEWER_URL = 'http://torres.stackstreamer.com/viewer/viewer.html'
+elif is_test:
     DATA_PATH = '/data/'
-    MEDIA_ROOT = '/web/django/data/'
+    MEDIA_ROOT = '/web/django/media/'
+    VIEWER_URL = 'http://test.stackstreamer.com/viewer/viewer.html'
 elif is_imageanalysis:
     DATA_PATH = '/home/eben/stackstreamer data/data/'
     MEDIA_ROOT = '/home/eben/stackstreamer data/'
