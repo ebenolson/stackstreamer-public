@@ -192,6 +192,37 @@
       });
     }
 
+    function setLocation(layer, zoom, centerX, centerY) {
+      el = $('#container');
+
+      if (zoom<0) { zoom=0; }
+      if (zoom>info['tile sets'].length-1) { zoom = info['tile sets'].length-1; }
+
+
+      el.data('zoom',zoom);
+
+      var nx = info['tile sets'][$('#container').data('zoom')]['nx'];
+      var ny = info['tile sets'][$('#container').data('zoom')]['ny'];
+      $('#container').css('width', nx*TILESIZE);
+      $('#container').css('height', ny*TILESIZE);      
+
+      var x = centerX/Math.pow(2, zoom);
+      x = $(window).width()/2 - x;
+      var y = centerY/Math.pow(2, zoom);
+      y = $(window).height()/2 - y;
+      el.css('left', x);
+      el.css('top', y);
+
+      el.children('.tile').remove();
+
+      if (layer<0) { layer=0; }
+      if (layer>info['number of slices']-1) { layer = info['number of slices']-1; }
+      el.data('slice', layer);
+
+      updateTileImages();
+      updateInfo();      
+    }
+
     function changeZoom(zoom, event) {
       el = $('#container');
       oldzoom = el.data('zoom');
@@ -253,7 +284,14 @@
     }
 
     function toggleInfo() {
-      $('.info').toggleClass('hidden');
+      $('.overlay').toggleClass('hidden');
+    }
+
+    function toggleFlagBar() {
+      if ($('#flagbar').hasClass('inactive')) {
+        loadFlagBar();
+      }
+      $('#flagbar').toggleClass('inactive');
     }
 
     function saveSnapshot() {
@@ -293,13 +331,23 @@
 
     function loadFlagBar() {
       console.log('loading flags');
-      $('#flagbar').load('/flags/list/', function() {
-        $('.flag a').click( function() {
-          console.log(this.target);
+      $('#flaglist').load('/flags/list/', function() {
+        $('.flag_delete a').click( function() {
           $.get(this.target, function() {
             loadFlagBar();
           });
         });
+        $('.flag_link a').click( function() {
+          gotoFlag(this.target);
+        });
+
+      });
+    }
+
+    function gotoFlag(flagid) {
+      var url = sprintf('http://test.stackstreamer.com/api/v1/flag/%s/?format=json', flagid);
+      $.getJSON(url, function(flag) {
+        setLocation(parseInt(flag.layer), parseInt(flag.zoom), parseInt(flag.pixel_x), parseInt(flag.pixel_y));
       });
     }
 
@@ -336,7 +384,8 @@
 
       $('#container').draggable({ drag: dragUpdate});
 
-      $('#flagbutton').click(saveFlag);
+      $('#flagbutton').click(toggleFlagBar);
+      $('#addflagbutton').click(saveFlag);
       $('#snapshotbutton').click(saveSnapshot);
         //$('a#snapshotbutton').attr('href','/export/fullslice/7a6e377e-ba80-4756-a857-a23c177722e2/100').attr('download','snapshot.png');
 
@@ -417,14 +466,13 @@
 <body>
   <div id="viewport">
 
-
-  <div id="info" class="info">
+  <div id="info" class="info overlay">
     <table>
       <tr><td id="slice"></td></tr>
       <tr><td id="zoom"></td></tr>
     </table>
   </div>
-  <div class="buttonbar info">
+  <div class="buttonbar overlay">
     <a id="questionbutton" class="disabledbutton">
       <span class="fa-stack fa-2x fa-lg">
         <i class="fa fa-circle fa-stack-2x"></i>
@@ -443,7 +491,7 @@
         <i class="fa fa-location-arrow fa-inverse fa-stack-1x"></i>
       </span>
     </a>
-    <a id="flagbutton" class="disabledbutton">
+    <a id="flagbutton">
       <span class="fa-stack fa-2x fa-lg">
         <i class="fa fa-circle fa-stack-2x"></i>
         <i class="fa fa-flag fa-inverse fa-stack-1x"></i>
@@ -467,10 +515,19 @@
         <i class="fa fa-arrows-alt fa-inverse fa-stack-1x"></i>
       </span>
     </a>    
-  </div>
-  <div id="flagbar" class="flagbar"></div>
-  
+  </div> 
   </div>  
+  <div id="flagbar" class="flagbar inactive overlay">
+    <div class="addflagbutton">
+    <a id="addflagbutton">
+      <span class="fa-stack fa-2x fa-lg">
+        <i class="fa fa-circle fa-stack-2x"></i>
+        <i class="fa fa-plus fa-inverse fa-stack-1x"></i>
+      </span>
+    </a>    
+    </div>
+    <div id="flaglist"></div>
+  </div>
 
 </body>
 </html>
