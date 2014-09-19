@@ -16,6 +16,7 @@
   <script src="./assets/jquery.mousewheel.min.js"></script>
   <script src="./assets/sprintf.min.js"></script>
   <script src="./assets/purl.min.js"></script>
+  <script src="./config.js"></script>
   <script>
     // Connect to Binary.js server
     var client;
@@ -350,7 +351,7 @@
     }
 
     function connectToServer() {
-      client = new BinaryClient('ws://relay1.stackstreamer.com:9000');
+      client = new BinaryClient(SERVER_ADDRESS);
       client.on('close', function() {
         console.log('Websocket connection closed, reopening');
         connectToServer();
