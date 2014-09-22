@@ -331,7 +331,7 @@
 
     function loadFlagBar() {
       console.log('loading flags');
-      $('#flaglist').load('/flags/list/', function() {
+      $('#flaglist').load('/flags/list/'+info.id+'/', function() {
         $('.flag_delete a').click( function() {
           $.get(this.target, function() {
             loadFlagBar();
