@@ -33,3 +33,16 @@ def delete_flag(request, id):
     except ObjectDoesNotExist, MultipleObjectsReturned:
         dbg('flag with id %s not found'%id)
         return HttpResponseBadRequest('')
+
+@login_required
+def edit_flag_text(request):
+    id = request.POST['pk']
+    value = request.POST['value']
+    try:
+        flag = Flag.objects.get(id=id)
+        flag.name = value
+        flag.save()
+        return HttpResponse('')
+    except ObjectDoesNotExist, MultipleObjectsReturned:
+        dbg('flag with id %s not found'%id)
+        return HttpResponseBadRequest('')

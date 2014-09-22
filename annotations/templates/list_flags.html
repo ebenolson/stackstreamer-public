@@ -14,7 +14,7 @@
                 </a>
             </div>
             <div class="flag_name">
-                <span class="label label-primary">{{flag.name}}</span>
+                <span class="label label-primary"><a href="#" class="flagtext" data-type="text" data-pk="{{ flag.id }}" data-url="{% url 'edit_flag_text' %}" data-title="Edit flag label" data-params="{csrfmiddlewaretoken:'{{csrf_token}}'}">{{flag.name}}</a></span>
             </div>
             <div class="flag_delete">
                 <a target="{% url 'delete_flag' id=flag.id %}">
@@ -29,4 +29,5 @@
         {% endfor %}
     </table>    
 </div>
+
 {% endblock %}
