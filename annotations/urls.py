@@ -9,7 +9,7 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     url(r'^flags/create/$', CreateFlagView.as_view(), name='flag_create'),
-    url(r'^flags/list/$', list_flags, name='flag_list'),
+    url(r'^flags/list/(?P<stack>.+)/$', list_flags, name='flag_list'),
     url(r'^flags/delete/(?P<id>.+)/', delete_flag, name='delete_flag'),
 
 )

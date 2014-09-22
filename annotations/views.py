@@ -18,8 +18,8 @@ class CreateFlagView(CreateView):
     form_class = forms.FlagForm
 
 @login_required
-def list_flags(request):
-    flags = Flag.objects.all()
+def list_flags(request, stack):
+    flags = Flag.objects.filter(stack=stack)
     # View code here...
     return render(request, 'list_flags.html', {"flags": flags, },
         content_type="text/html")    
