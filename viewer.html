@@ -19,6 +19,7 @@
   <script src="./assets/jquery.mousewheel.min.js"></script>
   <script src="./assets/sprintf.min.js"></script>
   <script src="./assets/purl.min.js"></script>
+  <script src="./assets/dom.jsPlumb-1.6.4-min.js"></script>
   <script src="./config.js"></script>
   <script src="./viewer.js"></script>
   <script src="./annotations.js"></script>
@@ -86,12 +87,23 @@
         <i class="fa fa-circle fa-stack-2x"></i>
         <i class="fa fa-plus fa-inverse fa-stack-1x"></i>
       </span>
-    </a>    
+    </a>
     </div>
-    <div id="flaglist" class="scroll-pane vertical-only">
-
-    </div>
+    <div id="flaglist" class="scroll-pane vertical-only">    </div>
   </div>
+
+  <div id="arrowbar" class="arrowbar inactive overlay">
+    <div class="addarrowbutton">
+    <a id="addarrowbutton">
+      <span class="fa-stack fa-2x fa-lg">
+        <i class="fa fa-circle fa-stack-2x"></i>
+        <i class="fa fa-plus fa-inverse fa-stack-1x"></i>
+      </span>
+    </a>
+    </div>
+    <div id="arrowlist" class="scroll-pane vertical-only">    </div>
+  </div>
+
 
 </body>
 </html>

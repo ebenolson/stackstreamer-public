@@ -155,3 +155,73 @@ a.disabledbutton {
 .flag_delete a:hover {
     color:red;
 }
+
+.arrowbar {
+  position:absolute;
+  background-color:#D0D0D0;
+  width:15%;
+  max-width: 200pt;
+  height:100%;
+  outline: 2pt solid gray;
+}
+
+.arrow {
+  width: 80%;
+  height: 0;
+  padding-bottom: 80%;
+  text-align:center; 
+  margin: 0 auto;
+  overflow: hidden;
+  position:relative;
+}
+
+.arrow img:hover {
+  outline: 3pt solid blue;
+}
+
+#arrowlist {
+  width: 100%;
+  height: 90%;
+  overflow-y:scroll;
+  overflow-x:hidden;  
+}
+
+.addarrowbutton {
+  width: 30%;
+  height: 0;
+  padding-bottom: 30%;
+  padding-top: 20%;
+  text-align:center; 
+  margin: 0 auto;
+  position:relative;
+}
+.addarrowbutton a {
+  color:black;
+}
+
+.addarrowbutton a:hover {
+  color:blue;
+}
+
+.arrowtext {
+  color:white;
+}
+
+.arrow_name {
+  float:left; 
+  position:absolute;
+  max-width: 80%;
+  bottom:10pt; 
+  left:5pt;
+}
+
+.arrow_delete {right: 5pt; float:right; position:absolute; top:5pt;}
+.arrow_delete a {color:black;}
+.arrow_delete a:hover {
+    color:red;
+}
+
+.clicktarget {
+    cursor:crosshair;
+    position: absolute;
+}

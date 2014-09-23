@@ -313,6 +313,10 @@ function activateControls() {
 
   $('#flagbutton').click(toggleFlagBar);
   $('#addflagbutton').click(saveFlag);
+
+  $('#arrowbutton').click(toggleArrowBar);
+  $('#addarrowbutton').click(saveArrow);
+
   $('#snapshotbutton').click(saveSnapshot);
     //$('a#snapshotbutton').attr('href','/export/fullslice/7a6e377e-ba80-4756-a857-a23c177722e2/100').attr('download','snapshot.png');
 
