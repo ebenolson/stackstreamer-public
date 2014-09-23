@@ -90,12 +90,12 @@
 
     function goHome() {
       console.log('going home');
-      changeZoom(info['tile sets'].length-1,false);
-      changeLayer(parseInt(info['number of slices']/2));    
-      var el = $('#container');
-      console.log('changing pos');
-      el.css('left', parseInt(el.css('width'))/2);
-      el.css('top', parseInt(el.css('height'))/2);
+      var zoom = info['tile sets'].length-1;
+      var layer = parseInt(info['number of slices']/2);
+      var nx = info['tile sets'][0]['nx'];
+      var ny = info['tile sets'][0]['ny'];
+      setLocation(layer, zoom, nx*TILESIZE/2, ny*TILESIZE/2);
+      console.log(nx*TILESIZE/2);
     }
 
     function buildInfo() {
