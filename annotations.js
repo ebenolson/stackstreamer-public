@@ -116,28 +116,6 @@ function saveArrow() {
     );
     $('.clicktarget').remove();
   });
-  /*
-  var x = $(window).width()/2-$('#container').offset().left;
-  x = x*Math.pow(2, $('#container').data('zoom'));
-  var y = $(window).height()/2-$('#container').offset().top;
-  y = y*Math.pow(2, $('#container').data('zoom'));
-  console.log(x, y);
-  var data = JSON.stringify({"pixel_x":x,
-          "pixel_y":y,
-          "layer":$('#container').data('slice'),
-          "stack":"/api/v1/stack/"+info.id+'/',
-          "zoom":$('#container').data('zoom'),
-          });
-
-  $.ajax ({
-            url: '/api/v1/arrow/?format=json',
-            type: "POST",
-            data: data,
-            dataType: "json",
-            contentType: "application/json; charset=utf-8",
-            complete: loadArrowBar,
-          }
-  );*/
 }    
 
 
@@ -160,8 +138,29 @@ function loadArrowBar() {
       gotoArrow(this.target);
     });
 
-    $('.arrowtext').editable({placement:'right', container:'body'});
+    $('.arrowtext').editable({placement:'right', container:'body', success: function(response, newValue) {
+      loadArrowMarkers();
+    }});
   });
+
+  loadArrowMarkers();
+}
+
+function loadArrowMarkers() {
+  $('#markers').remove();
+  $('#container').append('<div id="markers"/>');
+
+  $('#markers').load('/arrows/markers/'+info.id+'/', function() {
+    $('.arrowmarker').each( function() {
+      var x = $(this).data('pixel-x')/Math.pow(2, $('#container').data('zoom'));
+      var y = $(this).data('pixel-y')/Math.pow(2, $('#container').data('zoom'));
+
+      $(this).css('left', x);
+      $(this).css('top', y);
+
+      if ($('#container').data('slice') != $(this).data('layer')) $(this).remove();
+    });  
+  });  
 }
 
 function gotoArrow(arrowid) {

@@ -153,6 +153,10 @@ function updateInfo() {
   $('#layericon'+$('#container').data('slice')).addClass('active');
 
   $('.layericon,.active img').attr('src', "./assets/icon_layer_selected.svg");           
+
+  if (!$('#arrowbar').hasClass('inactive')) {
+    loadArrowMarkers();
+  }
 }
 
 function updateTileImages() {
@@ -242,8 +246,8 @@ function changeZoom(zoom, event) {
 
   //buildTiles();     
   el.children('.tile').remove();
-  updateTileImages();
   updateInfo();      
+  updateTileImages();
 }
 
 function changeLayer(i) {

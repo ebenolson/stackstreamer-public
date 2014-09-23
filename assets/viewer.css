@@ -28,7 +28,7 @@ body {
 
 #container {
   position:relative;
-  overflow: hidden;
+  overflow: visible;
   top: 300px;
   left: 0px;
   width: 4096px;
@@ -37,7 +37,7 @@ body {
 
 .oldcontainer {
   position:relative;
-  overflow: hidden;
+  overflow: visible;
   top: 300px;
   left: 0px;
   width: 4096px;
@@ -138,6 +138,10 @@ a.disabledbutton {
   color:blue;
 }
 
+.overlay {
+  z-index: 500;
+}
+
 .flagtext {
   color:white;
 }
@@ -224,4 +228,26 @@ a.disabledbutton {
 .clicktarget {
     cursor:crosshair;
     position: absolute;
+}
+
+.arrowmarker {
+  position: absolute;
+  z-index: 100;
+}
+
+.arrowmarker_head {
+  position: relative;
+  left:-100%;
+}
+.arrowmarker_label {
+  position: absolute;
+  top:110%;
+  left:-150%;
+}
+
+
+#markers {
+  height: inherit;
+  width: inherit;
+  overflow: inherit;
 }
