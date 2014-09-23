@@ -38,4 +38,20 @@ class Flag(Annotation):
     pass
 
 class Arrow(Annotation):
-    rotation = models.FloatField(default=0)
+    def label(self, value):
+        res = ''
+        while value-1 >= 0:
+            value = value-1
+            res = chr(ord('A')+value%26) + res
+            value = value // 26
+        return res
+
+    def save(self, *args, **kwargs):
+        if self.name == 'Untitled':
+            self.name = self.label(len(Arrow.objects.filter(stack=self.stack))+1)
+        if not self.thumbnail:
+            fn = export_snapshot(self.stack.uuid, self.layer, self.zoom, 
+                self.pixel_x/2.0**self.zoom-100, self.pixel_y/2.0**self.zoom-100, 
+                self.pixel_x/2.0**self.zoom+100, self.pixel_y/2.0**self.zoom+100)
+            self.thumbnail.save(fn, File(open(settings.MEDIA_ROOT+fn,'rb')))
+        super(Annotation, self).save(*args, **kwargs)

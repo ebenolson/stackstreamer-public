@@ -3,7 +3,7 @@ import settings
 from django.conf.urls.static import static
 
 from tastypie.api import Api
-from api.resources import StackResource, FlagResource
+from api.resources import StackResource, FlagResource, ArrowResource
 
 import stackorg.views
 
@@ -13,6 +13,7 @@ admin.autodiscover()
 v1_api = Api(api_name='v1')
 v1_api.register(StackResource())
 v1_api.register(FlagResource())
+v1_api.register(ArrowResource())
 
 urlpatterns = patterns('',
     # Examples:

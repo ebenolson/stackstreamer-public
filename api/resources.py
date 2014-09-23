@@ -4,7 +4,7 @@ from tastypie.resources import ALL, ALL_WITH_RELATIONS
 
 from tastypie.authorization import DjangoAuthorization
 
-from annotations.models import Flag
+from annotations.models import Flag, Arrow
 from stackorg.models import Stack
 
 class StackResource(ModelResource):
@@ -20,3 +20,10 @@ class FlagResource(ModelResource):
         queryset = Flag.objects.all()
         allowed_methods = ['get', 'post', 'put', 'delete']
         authorization = DjangoAuthorization()
+
+class ArrowResource(ModelResource):
+    stack = fields.ForeignKey(StackResource, 'stack')
+    class Meta:
+        queryset = Arrow.objects.all()
+        allowed_methods = ['get', 'post', 'put', 'delete']
+        authorization = DjangoAuthorization()        
