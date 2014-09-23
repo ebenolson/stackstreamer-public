@@ -59,6 +59,13 @@ def list_arrows(request, stack):
         content_type="text/html")    
 
 @login_required
+def marker_list(request, stack):
+    arrows = Arrow.objects.filter(stack=stack)
+    # View code here...
+    return render(request, 'marker_list.html', {"arrows": arrows, },
+        content_type="text/html")    
+
+@login_required
 def delete_arrow(request, id):
     try:
         arrow = Arrow.objects.get(id=id)
