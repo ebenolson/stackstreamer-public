@@ -61,6 +61,7 @@ elif is_aeolos:
 INSTALLED_APPS = (
     'stackstreamer',
     'stackorg',
+    'exportroi',
     'annotations',
     'tastypie',
     'sorl.thumbnail',

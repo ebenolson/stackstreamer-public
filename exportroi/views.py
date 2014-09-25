@@ -3,6 +3,10 @@ from django.http import HttpResponse
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from django.contrib.auth.decorators import login_required
 
+from django.views.generic.edit import CreateView, ProcessFormView
+from exportroi.models import DataExport
+from exportroi.forms import DataExportForm
+
 from stackstreamer import settings
 from stackstreamer.prettyprint import *
 
@@ -41,3 +45,8 @@ def export_snapshot(request, uuid, slice, zoom, x0, y0, x1, y1):
         return HttpResponse(status=400)
     else:
         return redirect(settings.MEDIA_URL+fn)
+
+class CreateDataExport(CreateView):
+    template_name = 'dataexport_form.html'
+    form_class = DataExportForm
+    success_url = '/'
