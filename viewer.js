@@ -269,17 +269,14 @@ function changeLayer(i) {
 
 function toggleInfo() {
   $('.overlay').toggleClass('hidden');
-}
 
-function saveSnapshot() {
-  var x0, x1, y0, y1;
-  x0 = -$('#container').offset().left;
-  x1 = x0+$(window).width();
-  y0 = -$('#container').offset().top;
-  y1 = y0+$(window).height();
-  var url = sprintf('/export/snapshot/%s/%d/%d/%d/%d/%d/%d', info['uuid'], $('#container').data('slice'), $('#container').data('zoom'), x0, y0, x1, y1);
-  console.log(url);
-  $('a#snapshotbutton').attr('href',url).attr('download','snapshot.png');
+  if ($('.overlay').hasClass('hidden')) {
+    $('.fullscreenpopup').bPopup({
+      appendTo:'container',
+      autoClose:1000,
+      modal:false,
+    });
+  }
 }
 
 function activateControls() {
@@ -322,6 +319,7 @@ function activateControls() {
   $('#addarrowbutton').click(saveArrow);
 
   $('#snapshotbutton').click(saveSnapshot);
+  $('#exportbutton').click(saveExport);
     //$('a#snapshotbutton').attr('href','/export/fullslice/7a6e377e-ba80-4756-a857-a23c177722e2/100').attr('download','snapshot.png');
 
   $('#homebutton').click(goHome);

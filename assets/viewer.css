@@ -245,9 +245,14 @@ a.disabledbutton {
   left:-150%;
 }
 
-
 #markers {
   height: inherit;
   width: inherit;
   overflow: inherit;
+}
+
+.dragbox {
+  background-color: blue;
+  opacity: 0.2;
+  position:absolute;
 }

@@ -88,7 +88,13 @@ function saveArrow() {
   target.css('top', $('#container').css('top'));  
   target.css('width', $('#container').css('width'));  
   target.css('height', $('#container').css('height'));
-  $('#viewport').append(target)
+  $('#viewport').append(target);
+  $('body').append($('<div class="arrowpopup" style="display:none"><h2><span class="label label-info">Click to place an arrow</span></h2></div>'));
+  $('.arrowpopup').bPopup({
+    appendTo:'container',
+    autoClose:1000,
+    modal:false,
+  });
   $('.clicktarget').click(function(event) {
     console.log('clicked');
     var offset = $('.clicktarget').offset(); 
@@ -115,6 +121,7 @@ function saveArrow() {
             }
     );
     $('.clicktarget').remove();
+    $('.arrowpopup').remove();
   });
 }    
 
@@ -122,6 +129,9 @@ function saveArrow() {
 function toggleArrowBar() {
   if ($('#arrowbar').hasClass('inactive')) {
     loadArrowBar();
+  }
+  else {
+    $('#markers').remove();
   }
   $('#arrowbar').toggleClass('inactive');
 }
