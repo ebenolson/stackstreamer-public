@@ -85,7 +85,7 @@ function saveExport() {
 
           $('#id_layer0').attr('value',layer0);
           $('#id_layer1').attr('value',layer1);
-          $('#id_stack option').attr('value',info.id);
+          $('#id_stack').attr('value',info.id);
         });
       });
     });
