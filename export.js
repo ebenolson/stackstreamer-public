@@ -85,8 +85,7 @@ function saveExport() {
 
           $('#id_layer0').attr('value',layer0);
           $('#id_layer1').attr('value',layer1);
-          $('#id_stack option').attr('selected',false);
-          $('#id_stack option[value='+info.id+'1]').attr('selected','selected');          
+          $('#id_stack option').attr('value',info.id);
         });
       });
     });
