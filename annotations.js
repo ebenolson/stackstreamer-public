@@ -41,7 +41,7 @@ function loadFlagBar() {
 }
 
 function gotoFlag(flagid) {
-  var url = sprintf('http://test.stackstreamer.com/api/v1/flag/%s/?format=json', flagid);
+  var url = sprintf('/api/v1/flag/%s/?format=json', flagid);
   $.getJSON(url, function(flag) {
     setLocation(parseInt(flag.layer), parseInt(flag.zoom), parseInt(flag.pixel_x), parseInt(flag.pixel_y));
   });
@@ -174,7 +174,7 @@ function loadArrowMarkers() {
 }
 
 function gotoArrow(arrowid) {
-  var url = sprintf('http://test.stackstreamer.com/api/v1/arrow/%s/?format=json', arrowid);
+  var url = sprintf('/api/v1/arrow/%s/?format=json', arrowid);
   $.getJSON(url, function(arrow) {
     setLocation(parseInt(arrow.layer), parseInt(arrow.zoom), parseInt(arrow.pixel_x), parseInt(arrow.pixel_y));
   });
