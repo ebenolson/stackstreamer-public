@@ -1,9 +1,9 @@
-apt-get install virtualenv
+apt-get install python-virtualenv
 
 virtualenv venv
 source venv/bin/activate
 
-apt-get install libjpeg-dev libtiff-dev python-dev rabbitmq-server
+apt-get install libjpeg-dev libtiff-dev python-dev python-numpy mercurial gunicorn npm nodejs-legacy rabbitmq-server
 
 pip install -r requirements.txt
 
@@ -12,4 +12,4 @@ sudo apt-get update
 sudo apt-get install btsync
 
 ## DB backups go to /web/django/dbbackup # Secret: A4OGKZZNR2I53J7E6BRHUQ4X33TDMZMSC
-# image data secret: ABHZOURYR25U5JO2YF5H5IDVWNECMWZKV
+# image data secret: ABHZOURYR25U5JO2YF5H5IDVWNECMWZKVnpm 
