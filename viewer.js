@@ -7,6 +7,8 @@ var TILESIZE = 256;
 var VIEWPORTW = $(window).width();
 var VIEWPORTH = $(window).height();
 
+var lastUpdatePos = {'left':0,'top':0};
+
 var rmb = false;
 var stack_opened = false;
 var tiles_loading = 0;
@@ -100,7 +102,7 @@ function preloadBordering() {
   });
 }
 
-function updateVisibleTiles() {     
+function updateVisibleTiles() {
   var x0 = -parseInt($('#container').css('left'));
   var y0 = -parseInt($('#container').css('top'));
 
@@ -139,7 +141,11 @@ function updateVisibleTiles() {
 }
 
 function dragUpdate(event, ui) {
-  updateVisibleTiles();
+  if (Math.abs(ui.position.left-lastUpdatePos.left)>64 || Math.abs(ui.position.top-lastUpdatePos.top)>64) {
+    console.log('drag update');
+    lastUpdatePos = ui.position;
+    updateVisibleTiles();
+  }
   //preloadBordering();     
 }
 
