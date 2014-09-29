@@ -58,7 +58,13 @@ function saveExport() {
       });
 
       $('.clicktarget').mouseup(function(event) {
-        var layer1 = $('#container').data('slice');
+        if (layer0 <= $('#container').data('slice')) {
+          var layer1 = $('#container').data('slice');
+        }
+        else {
+          var layer1 = layer0;         
+          layer0 = $('#container').data('slice');
+        }
 
         $('.clicktarget').remove();
         $('.exportpopup').remove();
