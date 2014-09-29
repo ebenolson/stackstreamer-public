@@ -28,8 +28,11 @@ class DataExport(models.Model):
     completion = models.FloatField(default=0)
     filename = models.FileField(upload_to='export', blank=True)
 
+    def layers(self):
+        return self.layer1-self.layer0+1
+
     def get_absolute_url():
         return '/'
         
     def __unicode__(self):
-        return self.name    
+        return self.name

@@ -65,6 +65,7 @@ INSTALLED_APPS = (
     'annotations',
     'tastypie',
     'sorl.thumbnail',
+    'djcelery',
     'django_admin_bootstrapped.bootstrap3',
     'django_admin_bootstrapped',    
     'django.contrib.admin',
@@ -89,6 +90,9 @@ ROOT_URLCONF = 'stackstreamer.urls'
 
 WSGI_APPLICATION = 'stackstreamer.wsgi.application'
 
+BROKER_URL = 'amqp://'
+CELERY_RESULT_BACKEND='djcelery.backends.database:DatabaseBackend'
+CELERY_RESULT_BACKEND='djcelery.backends.cache:CacheBackend'
 
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases

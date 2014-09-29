@@ -3,7 +3,7 @@ apt-get install virtualenv
 virtualenv venv
 source venv/bin/activate
 
-apt-get install libjpeg-dev libtiff-dev python-dev
+apt-get install libjpeg-dev libtiff-dev python-dev rabbitmq-server
 
 pip install -r requirements.txt
 

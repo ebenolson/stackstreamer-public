@@ -40,6 +40,7 @@ img.thumb {
             <td><table>
                 <tr><td><a class="btn btn-lg btn-primary" href="{{VIEWER_URL}}?id={{s.uuid}}" role="button">Launch viewer</a></td></tr>
                 <tr><td><a class="btn btn-lg btn-default" href="{% url 'admin:stackorg_stack_change' s.id %}" role="button">Edit metadata</a></td></tr>
+                <tr><td><a class="btn btn-lg btn-default" href="{% url 'list_exports' s.id %}" role="button">Download data</a></td></tr>
                 </table>
             </td>
         </tr>

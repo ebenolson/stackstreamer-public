@@ -10,5 +10,6 @@ admin.autodiscover()
 urlpatterns = patterns('',
     # Examples:
     url(r'^list/', 'stackorg.views.list_all_stacks', name='list_all_stacks'),
+    url(r'^listexports/(?P<stackid>.+)/$', 'stackorg.views.list_exports', name='list_exports'),
     # url(r'^blog/', include('blog.urls')),
 )

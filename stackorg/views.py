@@ -6,6 +6,8 @@ from django.contrib.auth.decorators import login_required
 from stackstreamer import settings
 from stackorg.models import Stack
 
+from exportroi.models import DataExport
+
 import os, os.path
 import json
 import hashlib
@@ -22,3 +24,12 @@ def list_all_stacks(request):
     # View code here...
     return render(request, 'list.html', {"stacks": stacks, 'VIEWER_URL':settings.VIEWER_URL}, 
         content_type="text/html")
+
+
+@login_required
+def list_exports(request, stackid):
+    stack = Stack.objects.filter(pk=stackid)
+    exports = DataExport.objects.filter(stack=stackid)
+    # View code here...
+    return render(request, 'exportlist.html', {"stack": stack, "exports":exports}, 
+        content_type="text/html")    
