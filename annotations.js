@@ -48,6 +48,10 @@ function gotoFlag(flagid) {
 }
 
 function toggleFlagBar() {
+  if (!$('#arrowbar').hasClass('inactive')) {
+    toggleArrowBar();
+  }
+
   if ($('#flagbar').hasClass('inactive')) {
     loadFlagBar();
   }
@@ -127,6 +131,10 @@ function saveArrow() {
 
 
 function toggleArrowBar() {
+  if (!$('#flagbar').hasClass('inactive')) {
+    toggleFlagBar();
+  }
+
   if ($('#arrowbar').hasClass('inactive')) {
     loadArrowBar();
   }
