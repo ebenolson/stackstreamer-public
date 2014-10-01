@@ -106,9 +106,10 @@ a.disabledbutton {
   position:relative;
 }
 
-.flag img:hover {
-  outline: 3pt solid blue;
+.flag_link a img:hover {
+  -webkit-filter: brightness(0.7) sepia(1) hue-rotate(180deg);
 }
+
 
 #flaglist {
   width: 100%;
@@ -166,8 +167,8 @@ a.disabledbutton {
   position:relative;
 }
 
-.arrowitem img:hover {
-  outline: 3pt solid blue;
+.arrow_link a img:hover {
+  -webkit-filter: brightness(0.7) sepia(1) hue-rotate(180deg);
 }
 
 #arrowlist {
