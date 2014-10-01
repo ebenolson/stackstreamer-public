@@ -165,7 +165,7 @@ function dragUpdate(event, ui) {
 }
 
 function updateInfo() {
-  $('#info #slice').text(sprintf("Slice %d of %d", $('#container').data('slice')+1, info['number of slices']));
+  $('#info #slice').text(sprintf("Layer %d of %d", $('#container').data('slice')+1, info['number of slices']));
   var scale = Math.pow(2, $('#container').data('zoom'));
   $('#info #zoom').text(sprintf("Scale 1 : %d", scale));
 
@@ -342,6 +342,8 @@ function activateControls() {
   });
 */
   $('#container').draggable({ drag: dragUpdate});
+
+  $('#helpbutton').click(doTour);
 
   $('#flagbutton').click(toggleFlagBar);
   $('#addflagbutton').click(saveFlag);

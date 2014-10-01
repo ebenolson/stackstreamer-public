@@ -118,20 +118,11 @@ a.disabledbutton {
 }
 
 .addflagbutton {
-  width: 30%;
-  height: 0;
-  padding-bottom: 30%;
+  padding-bottom: 20%;
   padding-top: 20%;
   text-align:center; 
   margin: 0 auto;
   position:relative;
-}
-.addflagbutton a {
-  color:black;
-}
-
-.addflagbutton a:hover {
-  color:blue;
 }
 
 .overlay {
@@ -165,7 +156,7 @@ a.disabledbutton {
   outline: 2pt solid gray;
 }
 
-.arrow {
+.arrowitem {
   width: 80%;
   height: 0;
   padding-bottom: 80%;
@@ -175,7 +166,7 @@ a.disabledbutton {
   position:relative;
 }
 
-.arrow img:hover {
+.arrowitem img:hover {
   outline: 3pt solid blue;
 }
 
@@ -187,20 +178,11 @@ a.disabledbutton {
 }
 
 .addarrowbutton {
-  width: 30%;
-  height: 0;
-  padding-bottom: 30%;
+  padding-bottom: 20%;
   padding-top: 20%;
   text-align:center; 
   margin: 0 auto;
   position:relative;
-}
-.addarrowbutton a {
-  color:black;
-}
-
-.addarrowbutton a:hover {
-  color:blue;
 }
 
 .arrowtext {
