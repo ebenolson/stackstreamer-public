@@ -81,9 +81,24 @@ function buildInfo() {
   for (i=info['number of slices']-1; i>=0; i--) {
     tile = $('<div class="layericon"><img src="./assets/icon_layer.svg"/></div>');
     tile.attr('id', 'layericon'+i);
+    tile.data('layer', i);
     tile.css('top', 100+800*i/info['number of slices']);
     $('#info').append(tile);      
-  }      
+  }
+  $('.layericon').click( function() {
+    changeLayer($(this).data('layer'));
+  });      
+  $('.layericon img').hover(function() {
+    $(this).attr('src', "./assets/icon_layer_hover.svg");
+  }, function() {
+    if ($(this).closest('.layericon').hasClass('active')) {
+      $(this).attr('src', "./assets/icon_layer_selected.svg");
+    }
+    else {
+      $(this).attr('src', "./assets/icon_layer.svg");     
+    }
+  });
+  $('.layericon').on('dragstart', function(event) { event.preventDefault(); });
 }
 
 function preloadBordering() {
@@ -294,14 +309,13 @@ function activateControls() {
     if (delta > 1) { delta = 1; }
     if (delta < -1) { delta = -1; }
 
-    if (lmb != true) {
-      var i = $('#container').data('zoom')+delta;
-      changeZoom(i, event);
-    }
-    else {
-//        if (tiles_loading > 0) return;
+    if (lmb == true || event.ctrlKey == true) {
       var i = $('#container').data('slice')+delta;
       changeLayer(i);
+    }
+    else {
+      var i = $('#container').data('zoom')+delta;
+      changeZoom(i, event);
     }
     event.preventDefault();
   });
