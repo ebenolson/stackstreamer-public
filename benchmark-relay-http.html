@@ -47,13 +47,27 @@
       controlStream.write({'action':'open', 'uuid':uuid});
     } 
 
-    function loadImage(target, src) {
+    function loadImage(x,y) {
+      console.log(x,y);
+      src = sprintf('http://torres.stackstreamer.com/media/temp/tile_x%04d_y%04d.20.jpg',x,y);
 //      controlStream.write({'action':'send', 'path':src});
-      controlStream.write({'action':'send', 'path':src, 'target':target});
-      starttimes[target] = performance.now();
-      tiles_loading += 1;
+//      controlStream.write({'action':'send', 'path':src, 'target':target});
+      starttime = performance.now();
+      $('<img src="'+src+'">').appendTo('#viewport').load(function() {
+        timings.push(performance.now()-starttime);
+        x = x + 1;
+        if (x>42) {
+          x = 0; 
+          y = y + 1;
+          if (y>15) {
+            renderResults();
+            return;
+          }
+        }
+        loadImage(x,y);
+      });
     }
-    
+
     function buildTiles() {
       $('.tile').remove();
 
@@ -275,7 +289,10 @@
 
     client.on('open', function(){
       controlStream = client.createStream();
-      openStack(); 
+      openStack();
+
+          //while (tiles_loading != 0) {}
+      loadImage(0, 0);
     });
 
     client.on('stream', function(stream, meta){
