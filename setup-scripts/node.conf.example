@@ -34,14 +34,14 @@ expect fork
 # The application startup Javascript file path.
  env APPLICATION_PATH="/web/node/server.js"
 # Process ID file path.
- env PIDFILE="/var/run/my-application.pid"
+ env PIDFILE="/web/run/my-application.pid"
 # Log file path.
  env LOG="/web/logs/node.log"
 # Forever settings to prevent the application spinning if it fails on launch.
  env MIN_UPTIME="5000"
  env SPIN_SLEEP_TIME="2000"
 
-setuid django
+setuid app
  
 #env NODE_BIN_DIR=""
 #env NODE_PATH=""

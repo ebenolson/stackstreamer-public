@@ -50,12 +50,6 @@ elif is_test:
     DATA_PATH = '/data/'
     MEDIA_ROOT = '/web/django/media/'
     VIEWER_URL = 'http://test.stackstreamer.com/viewer/viewer.html'
-elif is_imageanalysis:
-    DATA_PATH = '/home/eben/stackstreamer data/data/'
-    MEDIA_ROOT = '/home/eben/stackstreamer data/'
-elif is_aeolos:
-    DATA_PATH = '/home/eben/torres/torres-research-webviewer/pyramid/'
-    MEDIA_ROOT = '/home/eben/torres/stackstreamer_data/'
 # Application definition
 
 INSTALLED_APPS = (
