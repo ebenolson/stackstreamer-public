@@ -1,0 +1,11 @@
+<<<<<<< local
+venv*
+.pyc
+.sqlite3
+migrations*
+.sublime*
+=======
+syntax: glob
+pyramid/**
+node_modules*
+>>>>>>> other

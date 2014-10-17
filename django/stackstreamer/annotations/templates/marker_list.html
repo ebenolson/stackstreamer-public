@@ -1,0 +1,15 @@
+{% load thumbnail %}
+
+{% block content %}
+    {% for arrow in arrows %}
+    <div class="arrowmarker" data-pixel-x="{{ arrow.pixel_x }}" data-pixel-y="{{ arrow.pixel_y }}" data-layer="{{ arrow.layer }}">
+        <div class="arrowmarker_head">
+            <i class="fa fa-location-arrow fa-2x"></i>
+        </div>
+        <div class="arrowmarker_label">
+            <span class="label label-primary">{{ arrow.name }}</span>
+        </div>
+
+    </div>
+    {% endfor %}
+{% endblock %}
