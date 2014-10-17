@@ -1,0 +1,237 @@
+body {
+  overflow: hidden;
+}
+#viewport {
+  margin-left: auto;
+  margin-right: auto;
+  overflow: hidden;
+  position: absolute;
+  top: 0px;
+  left: 0px;       
+
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.hidden {
+  display: none;
+}
+
+.inactive {
+  display: none;
+}
+
+#container {
+  position:relative;
+  overflow: visible;
+  top: 300px;
+  left: 0px;
+  width: 4096px;
+  height: 4096px;
+}
+
+.oldcontainer {
+  position:relative;
+  overflow: visible;
+  top: 300px;
+  left: 0px;
+  width: 4096px;
+  height: 4096px;
+}
+
+#info {
+  margin-left: auto;
+  margin-right: auto;
+  font-size: 20pt;
+  position: absolute;
+  width:15%;
+  right: 5%;
+  top: 5%;
+}
+
+.tile {
+  position: absolute;
+  overflow: hidden;
+  width: 256px;
+  height: 256px;
+}
+
+.layericon {
+  position:absolute;
+  width:100px;
+  left:50px;
+}
+
+.buttonbar {
+  color:black;
+  position:absolute;
+  width:20pt;
+  right:5%;
+  top:20%;
+}
+
+.flagbar {
+  position:absolute;
+  background-color:#D0D0D0;
+  width:15%;
+  max-width: 200pt;
+  height:100%;
+  outline: 2pt solid gray;
+}
+
+
+.buttonbar a {
+  color:inherit;
+}
+
+a.disabledbutton {
+  color:gray;
+}
+
+.buttonbar a:hover {
+  color:blue;
+}
+
+.flag {
+  width: 80%;
+  height: 0;
+  padding-bottom: 80%;
+  text-align:center; 
+  margin: 0 auto;
+  overflow: hidden;
+  position:relative;
+}
+
+.flag_link a img:hover {
+  -webkit-filter: brightness(0.7) sepia(1) hue-rotate(180deg);
+}
+
+
+#flaglist {
+  width: 100%;
+  height: 90%;
+  overflow-y:scroll;
+  overflow-x:hidden;  
+}
+
+.addflagbutton {
+  padding-bottom: 20%;
+  padding-top: 20%;
+  text-align:center; 
+  margin: 0 auto;
+  position:relative;
+}
+
+.overlay {
+  z-index: 500;
+}
+
+.flagtext {
+  color:white;
+}
+
+.flag_name {
+  float:left; 
+  position:absolute;
+  max-width: 80%;
+  bottom:10pt; 
+  left:5pt;
+}
+
+.flag_delete {right: 5pt; float:right; position:absolute; top:5pt;}
+.flag_delete a {color:black;}
+.flag_delete a:hover {
+    color:red;
+}
+
+.arrowbar {
+  position:absolute;
+  background-color:#D0D0D0;
+  width:15%;
+  max-width: 200pt;
+  height:100%;
+  outline: 2pt solid gray;
+}
+
+.arrowitem {
+  width: 80%;
+  height: 0;
+  padding-bottom: 80%;
+  text-align:center; 
+  margin: 0 auto;
+  overflow: hidden;
+  position:relative;
+}
+
+.arrow_link a img:hover {
+  -webkit-filter: brightness(0.7) sepia(1) hue-rotate(180deg);
+}
+
+#arrowlist {
+  width: 100%;
+  height: 90%;
+  overflow-y:scroll;
+  overflow-x:hidden;  
+}
+
+.addarrowbutton {
+  padding-bottom: 20%;
+  padding-top: 20%;
+  text-align:center; 
+  margin: 0 auto;
+  position:relative;
+}
+
+.arrowtext {
+  color:white;
+}
+
+.arrow_name {
+  float:left; 
+  position:absolute;
+  max-width: 80%;
+  bottom:10pt; 
+  left:5pt;
+}
+
+.arrow_delete {right: 5pt; float:right; position:absolute; top:5pt;}
+.arrow_delete a {color:black;}
+.arrow_delete a:hover {
+    color:red;
+}
+
+.clicktarget {
+    cursor:crosshair;
+    position: absolute;
+}
+
+.arrowmarker {
+  position: absolute;
+  z-index: 100;
+}
+
+.arrowmarker_head {
+  position: relative;
+  left:-100%;
+}
+.arrowmarker_label {
+  position: absolute;
+  top:110%;
+  left:-150%;
+}
+
+#markers {
+  height: inherit;
+  width: inherit;
+  overflow: inherit;
+}
+
+.dragbox {
+  background-color: blue;
+  opacity: 0.2;
+  position:absolute;
+}

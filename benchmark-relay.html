@@ -1,0 +1,390 @@
+<html>
+<head>
+  <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+  <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">
+  <script src="http://code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
+  <script src="http://cdn.binaryjs.com/0/binary.js"></script>
+  <script src="./assets/jquery.mousewheel.min.js"></script>
+  <script src="./assets/sprintf.min.js"></script>
+  <script src="./assets/purl.min.js"></script>
+  <script>
+    // Connect to Binary.js server
+    var client = new BinaryClient('ws://torres.stackstreamer.com:9000');
+    client.on('close', function() {
+      client = new BinaryClient('ws://torres.stackstreamer.com:9000');
+    });
+    
+    var controlStream;
+
+    var info;
+    var TILESIZE = 256;
+    var VIEWPORTW = 1024;
+    var VIEWPORTH = 1024;
+
+    var rmb = false;
+
+    var timings = [];
+    var starttimes = {};
+
+    var tiles_loading = 0;
+    var highResLoaded = false;
+    //var streams = {};
+
+    function download(filename, text) {
+        var pom = document.createElement('a');
+        pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+        pom.setAttribute('download', filename);
+        pom.click();
+    }
+
+    function renderResults() {
+        download('timing.json', JSON.stringify(timings));
+    }
+
+    function openStack() {
+      var url = $.url();
+      var uuid = url.param('id');
+      controlStream.write({'action':'open', 'uuid':uuid});
+    } 
+
+    function loadImage(target, src) {
+//      controlStream.write({'action':'send', 'path':src});
+      controlStream.write({'action':'send', 'path':src, 'target':target});
+      starttimes[target] = performance.now();
+      tiles_loading += 1;
+    }
+    
+    function buildTiles() {
+      $('.tile').remove();
+
+      var nx = info['tile sets'][$('#container').data('zoom')]['nx'];
+      var ny = info['tile sets'][$('#container').data('zoom')]['ny'];
+
+      for (x=0; x<nx; x++) {
+        for (y=0; y<ny; y++) {
+          tile = $('<div class="tile"><img src=""/></div>');
+          tile.data('x', x);
+          tile.data('y', y);
+          tile.attr('id', 'tile_'+x+'_'+y)
+          tile.addClass('hidden');
+          $('#container').append(tile);
+        }
+      }
+
+      $('.tile').each( function () {
+        $(this).css('left', $(this).data('x')*256);
+        $(this).css('top', $(this).data('y')*256);
+      });
+    }
+
+    function buildViewer(slice, zoom) {
+      el = $('<div id="container" data-slice=1 data-zoom=0></div>');
+      el.data('zoom', zoom);
+      el.data('slice',slice);
+      $('#viewport').append(el);
+      var nx = info['tile sets'][zoom]['nx'];
+      var ny = info['tile sets'][zoom]['ny'];
+      $('#container').css('width', nx*TILESIZE);
+      $('#container').css('height', ny*TILESIZE);
+      return el;      
+    }
+
+    function buildInfo() {
+      for (i=info['number of slices']-1; i>=0; i--) {
+        tile = $('<div class="layericon"><img src="./assets/icon_layer.svg"/></div>');
+        tile.attr('id', 'layericon'+i);
+        tile.css('top', 100+800*i/info['number of slices']);
+        $('#info').append(tile);      
+      }      
+    }
+
+    function preloadBordering() {
+      if (!highResLoaded) return;
+      var x0 = parseInt($('#container').css('left'));
+      var y0 = parseInt($('#container').css('top'));
+      $('.tile').each( function () {
+        var x = x0 + parseInt($(this).css('left'));
+        var y = y0 + parseInt($(this).css('top'));
+        if (x > 0-256*4 && y > 0-256*4 && x < 1024+256*3 && y < 1024+256*3) {
+          if ($('img', this).attr('src') == '') {
+            loadImage($(this).attr('id'), sprintf("/zoom%1d/slice_%04d/tile_x%04d_y%04d.20.jpg", 
+            $('#container').data('zoom'), $('#container').data('slice'), $(this).data('x'), $(this).data('y')));
+          }
+        }
+      });
+    }
+
+    function updateVisibleTiles() {     
+      var x0 = -parseInt($('#container').css('left'));
+      var y0 = -parseInt($('#container').css('top'));
+
+      var nxmin = Math.max(0, Math.floor(x0/TILESIZE)-1);
+      var nymin = Math.max(0, Math.floor(y0/TILESIZE)-1);
+      var nxmax = Math.min(info['tile sets'][$('#container').data('zoom')]['nx'], Math.ceil(x0/TILESIZE+VIEWPORTW/TILESIZE)+1);
+      var nymax = Math.min(info['tile sets'][$('#container').data('zoom')]['ny'], Math.ceil(y0/TILESIZE+VIEWPORTH/TILESIZE)+1);
+      console.log(nxmin, nxmax);
+      //console.log(nxmax);
+      //console.log(nymin);
+      //console.log(nymax);
+      $('.tile').each( function () {
+        var nx = $(this).data('x');
+        var ny = $(this).data('y');
+        if (nx < nxmin || nx > nxmax || ny < nymin || ny > nymax) {
+          $(this).remove();
+        }
+      });
+
+      for (var i=nxmin; i<=nxmax; i++) {
+        for (var j=nymin; j<=nymax; j++) {
+          if ($('div.tile#tile_'+i+'_'+j).length != 1) {
+            tile = $('<div class="tile"><img src=""/></div>');
+            tile.data('x', i);
+            tile.data('y', j);
+            tile.attr('id', 'tile_'+i+'_'+j)
+            //tile.addClass('hidden');
+            tile.css('left', tile.data('x')*256);
+            tile.css('top', tile.data('y')*256);          
+            $('#container').append(tile);
+            loadImage(tile.attr('id'), sprintf("/zoom%1d/slice_%04d/tile_x%04d_y%04d.20.jpg", 
+                      $('#container').data('zoom'), $('#container').data('slice'), tile.data('x'), tile.data('y')));                        
+          }
+        }
+      }
+    }
+
+    function dragUpdate(event, ui) {
+      updateVisibleTiles();
+      //preloadBordering();     
+    }
+
+    function updateInfo() {
+      $('#info #slice').text(sprintf("Slice %d of %d", $('#container').data('slice')+1, info['number of slices']));
+      var scale = Math.pow(2, $('#container').data('zoom'));
+      $('#info #zoom').text(sprintf("Scale 1 : %d", scale));
+
+      $('.layericon,.active img').attr('src', "./assets/icon_layer.svg");
+      $('.layericon,.active').removeClass('active');
+      $('#layericon'+$('#container').data('slice')).addClass('active');
+
+      $('.layericon,.active img').attr('src', "./assets/icon_layer_selected.svg");           
+    }
+
+    function updateTileImages() {
+      updateVisibleTiles();
+//      highResLoaded = false;
+//      $('.tile:not(.hidden)').each( function () {
+//        loadImage($(this).attr('id'), sprintf("/zoom%1d/slice_%04d/tile_x%04d_y%04d.20.jpg", 
+//          $('#container').data('zoom'), $('#container').data('slice'), $(this).data('x'), $(this).data('y')));
+//      });
+    }
+
+    function loadHighresTileImages() {
+      $('.tile:not(.highres)').each( function () {
+        loadImage($(this).attr('id'), sprintf("/zoom%1d/slice_%04d/tile_x%04d_y%04d.80.jpg", 
+          $('#container').data('zoom'), $('#container').data('slice'), $(this).data('x'), $(this).data('y')));
+        $(this).addClass('highres');
+      });
+    }
+
+    function changeZoom(zoom, event) {
+      el = $('#container');
+      oldzoom = el.data('zoom');
+
+      if (zoom<0) { zoom=0; }
+      if (zoom>info['tile sets'].length-1) { zoom = info['tile sets'].length-1; }
+
+      if (zoom == oldzoom) return;
+      
+      var parentOffset = $('#viewport').offset(); 
+   //or $(this).offset(); if you really just want the current element's offset
+      var mouseX = event.pageX - parentOffset.left;
+      var mouseY = event.pageY - parentOffset.top;
+      oldContainerX = parseInt(el.css('left'));
+      oldContainerY = parseInt(el.css('top'));      
+      newContainerX = mouseX - (mouseX - oldContainerX) * Math.pow(2, oldzoom-zoom);
+      newContainerY = mouseY - (mouseY - oldContainerY) * Math.pow(2, oldzoom-zoom);
+
+      oldContainer = el.clone();
+      oldContainer.attr('id','').addClass('oldcontainer').prependTo('#viewport');
+      oldContainer.children('.tile').attr('id','');
+
+      el.data('zoom',zoom);
+      el.css('left', newContainerX);
+      el.css('top', newContainerY);
+
+      var nx = info['tile sets'][$('#container').data('zoom')]['nx'];
+      var ny = info['tile sets'][$('#container').data('zoom')]['ny'];
+      $('#container').css('width', nx*TILESIZE);
+      $('#container').css('height', ny*TILESIZE);      
+
+      //buildTiles();     
+      el.children('.tile').remove();
+      updateTileImages();
+      updateInfo();      
+    }
+
+    function changeLayer(i) {
+      el = $('#container');
+      if (i<0) { i=0; }
+      if (i>info['number of slices']-1) { i = info['number of slices']-1; }
+      el.data('slice', i);
+
+      $('.tile').each( function () {
+        $(this).removeClass('highres');
+        loadImage($(this).attr('id'), sprintf("/zoom%1d/slice_%04d/tile_x%04d_y%04d.20.jpg", 
+        $('#container').data('zoom'), $('#container').data('slice'), $(this).data('x'), $(this).data('y')));           
+      });
+      updateVisibleTiles();
+      //updateTileImages();
+      updateInfo();
+      //console.log(event.deltaX, event.deltaY, event.deltaFactor);
+    }
+
+    function activateControls() {
+      $('#container').mousewheel(function(event) {
+        var delta = event.deltaY;
+        if (delta > 1) { delta = 1; }
+        if (delta < -1) { delta = -1; }
+
+        if (rmb == true) {
+          var i = $(this).data('zoom')+delta;
+          changeZoom(i, event);
+        }
+        else {
+  //        if (tiles_loading > 0) return;
+          var i = $(this).data('slice')+delta;
+          changeLayer(i);
+        }
+        event.preventDefault();
+      });
+
+      $('#container').mousedown(function(event) {
+        if (event.which==3) {
+          rmb = true;
+        }
+      });
+
+      $('#container').mouseup(function(event) {
+        if (event.which==3) {
+          rmb = false;
+        }
+      });      
+
+      $('#container').draggable({ drag: dragUpdate});
+    }
+
+    client.on('open', function(){
+      controlStream = client.createStream();
+      openStack(); 
+    });
+
+    client.on('stream', function(stream, meta){
+      if (meta['type'] == 'image') {    
+        // Buffer for parts
+        var parts = [];
+        // Got new data
+        stream.on('data', function(data){
+          parts.push(data);
+        });
+        stream.on('end', function(){
+          // Display new data in browser!
+          $('#'+meta['target']+' img').attr('src', (window.URL || window.webkitURL).createObjectURL(new Blob(parts)));
+          timings.push(performance.now()-starttimes[meta['target']]);
+          tiles_loading -= 1;
+          if (tiles_loading == 0) {
+            $('.oldcontainer').remove();
+            var n = $('#container').data('slice');
+            if (n<100) {
+              changeLayer(n+1); 
+            }
+            else {
+              renderResults();
+            }
+            //loadHighresTileImages();
+          }
+          stream.destroy();            
+        });
+      }
+      if (meta['type'] == 'info') {
+        stream.on('data', function(data){         
+          console.log('received info');
+          info = $.parseJSON(data);
+          updateInfo();
+          //buildTiles();
+          buildInfo();
+          buildViewer(0, 2);
+          changeLayer(0);
+          //activateControls();
+        });
+      }
+    });
+
+  </script>
+<script type="text/javascript" language="javascript">
+        $(function() {
+            $(this).bind("contextmenu", function(e) {
+                e.preventDefault();
+            });
+        }); 
+    </script>
+  <style>
+    #viewport {
+      margin-left: auto;
+      margin-right: auto;
+      overflow: hidden;       
+      border-color: black;
+      border-width: 4pt;
+      border-style: solid;
+      width: 1024px;
+      height: 1024px;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    #container {
+      position:relative;
+      overflow: hidden;
+      top: 300px;
+      left: 0px;
+      width: 4096px;
+      height: 4096px;
+    }
+
+    .oldcontainer {
+      position:relative;
+      overflow: hidden;
+      top: 300px;
+      left: 0px;
+      width: 4096px;
+      height: 4096px;
+    }
+
+    .tile {
+      position: absolute;
+      overflow: hidden;
+      width: 256px;
+      height: 256px;
+    }
+
+    #info td {
+      font-size: 20pt;
+    }
+    .layericon {
+      position:absolute;
+      width:100px;
+    }
+  </style>  
+</head>
+<body>
+  <div id="viewport">
+  </div>
+  <div id="info">
+    <table>
+      <tr><td id="slice"></td></tr>
+      <tr><td id="zoom"></td></tr>
+    </table>
+  </div>
+</body>
+</html>
