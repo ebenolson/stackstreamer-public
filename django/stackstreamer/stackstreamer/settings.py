@@ -38,18 +38,17 @@ is_volumetric = 'volumetric' in os.uname()
 is_aeolos = 'aeolos' in os.uname()
 is_stackstreamer = 'stackstreamer' in os.uname()
 is_test = 'test' in os.uname()
+is_demo = 'demo' in os.uname()
 
-DATA_PATH = ''
-MEDIA_URL='/media/'
-
+DATA_PATH = '/data/'
+MEDIA_ROOT = '/web/django/media/'
+MEDIA_URL = '/media/' 
 if is_stackstreamer:
-    DATA_PATH = '/data/'
-    MEDIA_ROOT = '/web/django/media/'
     VIEWER_URL = 'http://torres.stackstreamer.com/viewer/viewer.html'
 elif is_test:
-    DATA_PATH = '/data/'
-    MEDIA_ROOT = '/web/django/media/'
     VIEWER_URL = 'http://test.stackstreamer.com/viewer/viewer.html'
+elif is_demo:
+    VIEWER_URL = 'http://demo.stackstreamer.com/viewer/viewer.html'
 # Application definition
 
 INSTALLED_APPS = (

@@ -8,3 +8,5 @@ migrations*
 *.orig
 *.pid
 *.log
+django/static/*
+django/media/*
