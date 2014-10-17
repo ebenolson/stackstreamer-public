@@ -27,7 +27,7 @@ CELERYD_CHDIR="/web/django/stackstreamer"
 CELERYD_OPTS="--time-limit=300 --concurrency=1"
 
 # %N will be replaced with the first part of the nodename.
-CELERYD_LOG_FILE="/web/log/celery/%N.log"
+CELERYD_LOG_FILE="/web/logs/celery/%N.log"
 CELERYD_PID_FILE="/web/run/celery/%N.pid"
 
 # Workers should run as an unprivileged user.

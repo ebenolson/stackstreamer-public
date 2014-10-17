@@ -34,7 +34,7 @@ server {
         expires 30d;
     }
     location /media/ { # MEDIA_URL
-        alias /web/django/data/; # MEDIA_ROOT
+        alias /web/django/media/; # MEDIA_ROOT
         expires 30d;
     }
     location / {
