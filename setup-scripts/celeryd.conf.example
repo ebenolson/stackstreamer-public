@@ -12,7 +12,7 @@ CELERY_BIN="/web/django/stackstreamer/venv/bin/celery"
 #CELERY_BIN="/virtualenvs/def/bin/celery"
 
 # Python interpreter from environment.
-ENV_PYTHON="$CELERYD_CHDIR/env/bin/python"
+ENV_PYTHON="$CELERYD_CHDIR/venv/bin/python"
 
 # App instance to use
 # comment out this line if you don't use an app

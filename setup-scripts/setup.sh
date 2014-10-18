@@ -1,6 +1,6 @@
 #!/bin/bash
 cp /web/setup-scripts/celeryd.conf.example /etc/default/celeryd
-ln -s /web/setup-scripts/celeryd.sh.example /etc/init.d/celeryd
+cp /web/setup-scripts/celeryd.sh.example /etc/init.d/celeryd
 
 cp /web/setup-scripts/gunicorn.conf.example /etc/init/gunicorn.conf
 ln -s /lib/init/upstart-job /etc/init.d/gunicorn
@@ -13,4 +13,4 @@ cp /web/setup-scripts/nginx-site.example /etc/nginx/sites-enabled/default
 service nginx reload
 service node start
 service gunicorn start
-service celeryd start
+/etc/init.d/celeryd start
