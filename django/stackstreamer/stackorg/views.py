@@ -22,7 +22,7 @@ def datalist(request):
 def list_all_stacks(request):
     stacks = Stack.objects.all()
     # View code here...
-    return render(request, 'list.html', {"stacks": stacks, 'VIEWER_URL':settings.VIEWER_URL}, 
+    return render(request, 'list.html', {"stacks": stacks}, 
         content_type="text/html")
 
 
@@ -31,5 +31,5 @@ def list_exports(request, stackid):
     stack = Stack.objects.get(pk=stackid)
     exports = DataExport.objects.filter(stack=stackid)
     # View code here...
-    return render(request, 'exportlist.html', {"stack": stack, "exports":exports, 'VIEWER_URL':settings.VIEWER_URL}, 
+    return render(request, 'exportlist.html', {"stack": stack, "exports":exports}, 
         content_type="text/html")    

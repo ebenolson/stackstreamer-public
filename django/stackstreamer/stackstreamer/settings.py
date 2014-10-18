@@ -43,6 +43,7 @@ is_demo = 'demo' in os.uname()
 DATA_PATH = '/data/'
 MEDIA_ROOT = '/web/django/media/'
 MEDIA_URL = '/media/' 
+VIEWER_URL = ''
 if is_stackstreamer:
     VIEWER_URL = 'http://torres.stackstreamer.com/viewer/viewer.html'
 elif is_test:

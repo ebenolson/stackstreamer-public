@@ -41,5 +41,5 @@
     <div class="alert alert-success">
         Create new export regions using the Viewer, download links will be available here.
     </div>
-    <a class="btn btn-lg btn-primary" href="{{VIEWER_URL}}?id={{stack.uuid}}" role="button">Launch viewer</a>
+    <a class="btn btn-lg btn-primary" href="{{ request.get_host }}/viewer.html?id={{stack.uuid}}" role="button">Launch viewer</a>
 {% endblock %}
