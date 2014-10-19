@@ -17,12 +17,14 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '2i$3o(9&o4z45^=h#eml*u)34yv=z!22y8db9^c5(r5*bvb22o'
+with open('/web/django/stackstreamer/django_key.secret') as f:
+    SECRET_KEY = f.read().strip()
 
-VIEWER_SECRET_KEY = 'r2o4rRGWnOhH8Nm38rAAE2F8DZztHpOHVOUSOouUw+M'
+with open('/web/django/stackstreamer/viewer_key.secret') as f:
+    VIEWER_SECRET_KEY = f.read().strip()
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 TEMPLATE_DEBUG = True
 
@@ -31,25 +33,11 @@ TEMPLATE_DIRS = (
     os.path.join(PROJECT_DIR, "templates"),
 )
 
-
-ALLOWED_HOSTS = []
-
-is_volumetric = 'volumetric' in os.uname()
-is_aeolos = 'aeolos' in os.uname()
-is_stackstreamer = 'stackstreamer' in os.uname()
-is_test = 'test' in os.uname()
-is_demo = 'demo' in os.uname()
+ALLOWED_HOSTS = ['*']
 
 DATA_PATH = '/data/'
 MEDIA_ROOT = '/web/django/media/'
 MEDIA_URL = '/media/' 
-VIEWER_URL = ''
-if is_stackstreamer:
-    VIEWER_URL = 'http://torres.stackstreamer.com/viewer/viewer.html'
-elif is_test:
-    VIEWER_URL = 'http://test.stackstreamer.com/viewer/viewer.html'
-elif is_demo:
-    VIEWER_URL = 'http://demo.stackstreamer.com/viewer/viewer.html'
 # Application definition
 
 INSTALLED_APPS = (

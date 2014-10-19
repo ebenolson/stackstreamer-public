@@ -10,6 +10,16 @@ ln -s /lib/init/upstart-job /etc/init.d/node
 
 cp /web/setup-scripts/nginx-site.example /etc/nginx/sites-enabled/default
 
+head -c 32 /dev/urandom | base64 > /web/django/stackstreamer/django_key.secret
+head -c 32 /dev/urandom | base64 > /web/django/stackstreamer/viewer_key.secret
+
+chown -R app /web
+chgrp -R web /web
+
+mkdir /data
+chown app /data
+chgrp web /data
+
 service nginx reload
 service node start
 service gunicorn start

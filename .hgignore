@@ -10,3 +10,4 @@ migrations*
 *.log
 django/static/*
 django/media/*
+*.secret
