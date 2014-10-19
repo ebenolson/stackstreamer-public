@@ -228,7 +228,7 @@ function dragUpdate(event, ui) {
     lastUpdatePos = ui.position;
     updateVisibleTiles();
 
-    cacheBordering = false;
+    cachedBordering = false;
     highResLoaded = false;
   }
   //preloadBordering();     
