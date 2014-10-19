@@ -14,6 +14,10 @@ var stack_opened = false;
 var tiles_loading = 0;
 var highResLoaded = false;
 //var streams = {};
+var tilecache = {};
+var cachedBordering = false;
+var cachedAboveBelow = false;
+var cacheCount = 0;
 
 function hideWarning() {
   $('#chromerequired').remove();
@@ -29,9 +33,39 @@ function openStack() {
 } 
 
 function loadImage(target, src) {
-//      controlStream.write({'action':'send', 'path':src});
+  if (src in tilecache) {
+    //console.log('load from cache');
+    $('#'+target+' img').attr('src', $('#cached_'+tilecache[src]+' img').attr('src'));
+    return;
+  }
   controlStream.write({'action':'send', 'path':src, 'target':target});
   tiles_loading += 1;
+}
+
+function cacheImage(src) {
+  if (cacheCount > 500) {
+    clearCache();
+  } 
+  if (src in tilecache) {
+    //console.log('already in cache');
+    return;
+  }
+  else {
+    console.log('caching '+ src);
+    tilecache[src] = jsmd5(src);
+    tile = $('<div class="tile cached hidden"><img src=""/></div>');
+    tile.attr('id','cached_'+src);
+
+    controlStream.write({'action':'send', 'path':src, 'target':'cached_'+tilecache[src]});
+    tiles_loading += 1;
+    cacheCount += 1;
+  }
+}
+
+function clearCache() {
+  $('.cached').remove();
+  tilecache = {};
+  cacheCount = 0;
 }
 
 function buildTiles() {
@@ -107,20 +141,47 @@ function buildInfo() {
   $('.layericon').on('dragstart', function(event) { event.preventDefault(); });
 }
 
-function preloadBordering() {
-  if (!highResLoaded) return;
-  var x0 = parseInt($('#container').css('left'));
-  var y0 = parseInt($('#container').css('top'));
-  $('.tile').each( function () {
-    var x = x0 + parseInt($(this).css('left'));
-    var y = y0 + parseInt($(this).css('top'));
-    if (x > 0-TILESIZE*4 && y > 0-TILESIZE*4 && x < VIEWPORTW+TILESIZE*3 && y < VIEWPORTH+TILESIZE*3) {
-      if ($('img', this).attr('src') == '') {
-        loadImage($(this).attr('id'), sprintf("/zoom%1d/slice_%04d/tile_x%04d_y%04d.20.jpg", 
-        $('#container').data('zoom'), $('#container').data('slice'), $(this).data('x'), $(this).data('y')));
+function cacheBordering() {
+  cachedBordering = true;  
+
+  var x0 = -parseInt($('#container').css('left'));
+  var y0 = -parseInt($('#container').css('top'));
+
+  var nxmin = Math.max(0, Math.floor(x0/TILESIZE)-1);
+  var nymin = Math.max(0, Math.floor(y0/TILESIZE)-1);
+  var nxmax = Math.min(info['tile sets'][$('#container').data('zoom')]['nx'], Math.ceil(x0/TILESIZE+VIEWPORTW/TILESIZE)+1);
+  var nymax = Math.min(info['tile sets'][$('#container').data('zoom')]['ny'], Math.ceil(y0/TILESIZE+VIEWPORTH/TILESIZE)+1);
+
+  for (var i=nxmin-1; i<=nxmax+1; i++) {
+    for (var j=nymin-1; j<=nymax+1; j++) {
+      if ($('div.tile#tile_'+i+'_'+j).length != 1) {
+        cacheImage(sprintf("/zoom%1d/slice_%04d/tile_x%04d_y%04d.20.jpg", 
+                  $('#container').data('zoom'), $('#container').data('slice'), i, j));                        
       }
     }
-  });
+  }
+}
+
+function cacheAboveBelow() {
+  cachedAboveBelow = true;
+
+  console.log('cache above below');
+  var x0 = -parseInt($('#container').css('left'));
+  var y0 = -parseInt($('#container').css('top'));
+
+  var nxmin = Math.max(0, Math.floor(x0/TILESIZE)-1);
+  var nymin = Math.max(0, Math.floor(y0/TILESIZE)-1);
+  var nxmax = Math.min(info['tile sets'][$('#container').data('zoom')]['nx'], Math.ceil(x0/TILESIZE+VIEWPORTW/TILESIZE)+1);
+  var nymax = Math.min(info['tile sets'][$('#container').data('zoom')]['ny'], Math.ceil(y0/TILESIZE+VIEWPORTH/TILESIZE)+1);
+
+  for (var i=nxmin; i<=nxmax; i++) {
+    for (var j=nymin; j<=nymax; j++) {
+      cacheImage(sprintf("/zoom%1d/slice_%04d/tile_x%04d_y%04d.20.jpg", 
+                $('#container').data('zoom'), $('#container').data('slice')-1, i, j));                        
+      cacheImage(sprintf("/zoom%1d/slice_%04d/tile_x%04d_y%04d.20.jpg", 
+                $('#container').data('zoom'), $('#container').data('slice')+1, i, j));                        
+    }
+  }
 }
 
 function updateVisibleTiles() {
@@ -131,7 +192,7 @@ function updateVisibleTiles() {
   var nymin = Math.max(0, Math.floor(y0/TILESIZE)-1);
   var nxmax = Math.min(info['tile sets'][$('#container').data('zoom')]['nx'], Math.ceil(x0/TILESIZE+VIEWPORTW/TILESIZE)+1);
   var nymax = Math.min(info['tile sets'][$('#container').data('zoom')]['ny'], Math.ceil(y0/TILESIZE+VIEWPORTH/TILESIZE)+1);
-  console.log(nxmin, nxmax);
+  //console.log(nxmin, nxmax);
   //console.log(nxmax);
   //console.log(nymin);
   //console.log(nymax);
@@ -166,6 +227,9 @@ function dragUpdate(event, ui) {
     console.log('drag update');
     lastUpdatePos = ui.position;
     updateVisibleTiles();
+
+    cacheBordering = false;
+    highResLoaded = false;
   }
   //preloadBordering();     
 }
@@ -196,6 +260,7 @@ function updateTileImages() {
 }
 
 function loadHighresTileImages() {
+  highResLoaded = true;
   $('.tile:not(.highres)').each( function () {
     loadImage($(this).attr('id'), sprintf("/zoom%1d/slice_%04d/tile_x%04d_y%04d.80.jpg", 
       $('#container').data('zoom'), $('#container').data('slice'), $(this).data('x'), $(this).data('y')));
@@ -231,7 +296,12 @@ function setLocation(layer, zoom, centerX, centerY) {
   el.data('slice', layer);
 
   updateTileImages();
-  updateInfo();      
+  updateInfo();    
+
+  cachedBordering = false;
+  cachedAboveBelow = false;
+  highResLoaded = false;
+  clearCache();
 }
 
 function changeZoom(zoom, event) {
@@ -278,6 +348,11 @@ function changeZoom(zoom, event) {
   el.children('.tile').remove();
   updateInfo();      
   updateTileImages();
+
+  cachedBordering = false;
+  cachedAboveBelow = false;
+  highResLoaded = false;
+  clearCache();  
 }
 
 function changeLayer(i) {
@@ -292,6 +367,11 @@ function changeLayer(i) {
     $('#container').data('zoom'), $('#container').data('slice'), $(this).data('x'), $(this).data('y')));           
   });
   updateVisibleTiles();
+
+  cachedBordering = false;
+  cachedAboveBelow = false;
+  highResLoaded = false;
+
   //updateTileImages();
   updateInfo();
   //console.log(event.deltaX, event.deltaY, event.deltaFactor);
@@ -395,12 +475,6 @@ function connectToServer() {
         // Display new data in browser!
         $('#'+meta['target']+' img').attr('src', (window.URL || window.webkitURL).createObjectURL(new Blob(parts)));
         tiles_loading -= 1;
-        if (tiles_loading == 0) {
-          $('#container').removeClass('hidden');
-          $('.oldcontainer').remove();
-          //changeLayer(($('#container').data('slice')+1)%100);
-          loadHighresTileImages();
-        }
         stream.destroy();
       });
     }
@@ -419,11 +493,22 @@ function connectToServer() {
         buildInfo();
         buildViewer(parseInt(info['number of slices'])/2, info['tile sets'].length-1);
         goHome();
-        activateControls();       
+        activateControls();
+        setInterval(timerUpdate, 50);
       });
     }
   });
 
+}
+
+function timerUpdate() {
+  if (tiles_loading == 0) {
+    $('#container').removeClass('hidden');
+    $('.oldcontainer').remove();
+  }  
+  if (cachedBordering == false) cacheBordering();
+  if (cachedAboveBelow == false) cacheAboveBelow();    
+  if (highResLoaded == false) loadHighresTileImages();
 }
 
 $( document ).ready(function() {
