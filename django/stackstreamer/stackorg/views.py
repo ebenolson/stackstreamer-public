@@ -4,7 +4,7 @@ from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from django.contrib.auth.decorators import login_required
 
 from stackstreamer import settings
-from stackorg.models import Stack
+from stackorg.models import Stack, Project
 
 from exportroi.models import DataExport
 
@@ -25,6 +25,14 @@ def list_all_stacks(request):
     return render(request, 'list.html', {"stacks": stacks}, 
         content_type="text/html")
 
+@login_required
+def list_all_projects(request):
+    projects = Project.objects.all()
+    for p in projects:
+        p.nstacks = len(Stack.objects.filter(project=p.id))
+    # View code here...
+    return render(request, 'projectlist.html', {"projects": projects}, 
+        content_type="text/html")
 
 @login_required
 def list_exports(request, stackid):
@@ -33,3 +41,12 @@ def list_exports(request, stackid):
     # View code here...
     return render(request, 'exportlist.html', {"stack": stack, "exports":exports}, 
         content_type="text/html")    
+
+@login_required
+def list_project_stacks(request, projectid):
+    p = Project.objects.get(pk=projectid)
+    stacks = Stack.objects.filter(project=p)
+    # View code here...
+    return render(request, 'list.html', {"stacks": stacks}, 
+        content_type="text/html")
+  

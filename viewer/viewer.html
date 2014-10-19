@@ -33,7 +33,7 @@
 
 </head>
 <body>
-  <div id="viewport">
+  <div id="viewport" class="hidden">
 
   <div id="info" class="info overlay">
     <ul class="list-unstyled">
@@ -114,5 +114,17 @@
     <div id="arrowlist" class="scroll-pane vertical-only">    </div>
   </div>
   <div class="fullscreenpopup" style="display:none"><h2><span class="label label-info">Press ESC to exit fullscreen mode</span></h2></div>
+  <div id="chromerequired">
+    <h2>
+    Warning: Stackstreamer is currently developed exclusively with Google Chrome, and compatibility issues are known to exist with other browsers, particularly Internet Explorer.<br><br>
+    If you experience problems, Chrome can be downloaded from <a href="https://www.google.com/chrome/browser/">https://www.google.com/chrome/browser/</a>.</span>
+    </h2>
+    <div><img src="assets/chrome.png"/></div>
+    <h2>
+      <a href="#" onclick="hideWarning()">Click here</a> to continue.
+    </h2>
+  </div>
 </body>
+
+
 </html>

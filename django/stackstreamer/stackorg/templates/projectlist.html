@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %} Stackstreamer - Projects {% endblock %}
+
+{% block content %}
+    <table class="table ">
+        {% for s in projects %}
+        <tr>
+            <td><table class="table table-bordered table-condensed">
+                <tr><td>Project Name:</td><td>{{s.name}}</td></tr>
+                <tr><td>Number of stacks:</td><td>{{s.nstacks}}</td></tr>
+            </table></td>
+            <td><table>
+                <tr><td><a class="btn btn-lg btn-primary" href="{% url 'list_project_stacks' s.id %}" role="button">Show stacks</a></td></tr>
+                </table>
+            </td>
+        </tr>        {% endfor %}
+    </table>    
+{% endblock %}

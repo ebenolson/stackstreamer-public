@@ -10,4 +10,3 @@ migrations*
 *.log
 django/static/*
 django/media/*
-config.js

@@ -15,6 +15,12 @@ var tiles_loading = 0;
 var highResLoaded = false;
 //var streams = {};
 
+function hideWarning() {
+  $('#chromerequired').remove();
+  $('#viewport').removeClass('hidden');
+}
+
+
 function openStack() {
   var url = $.url();
   var uuid = url.param('id');
@@ -420,9 +426,15 @@ function connectToServer() {
 
 }
 
-connectToServer();
-$(function() {
+$( document ).ready(function() {
+  connectToServer();
+  $(function() {
     $(this).bind("contextmenu", function(e) {
         e.preventDefault();
     });
-}); 
+  }); 
+  if (!!window.chrome == true) {
+    hideWarning();
+  }
+});
+

@@ -39,7 +39,7 @@ def logout_user(request):
     logout(request)
     return redirect('/')
 
-@login_required(login_url="/login/")
+@login_required
 def home(request):
     return redirect('list_all_stacks')
 

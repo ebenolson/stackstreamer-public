@@ -38,7 +38,7 @@ img.thumb {
                 <tr><td>Pixel size:</td><td>{{s.pixel_size}} &micro</td></tr>
             </table></td>
             <td><table>
-                <tr><td><a class="btn btn-lg btn-primary" href="{{ request.get_host }}/viewer.html?id={{s.uuid}}" role="button">Launch viewer</a></td></tr>
+                <tr><td><a class="btn btn-lg btn-primary" href="{{ request.get_host }}/viewer/viewer.html?id={{s.uuid}}" role="button">Launch viewer</a></td></tr>
                 <tr><td><a class="btn btn-lg btn-default" href="{% url 'admin:stackorg_stack_change' s.id %}" role="button">Edit metadata</a></td></tr>
                 <tr><td><a class="btn btn-lg btn-default" href="{% url 'list_exports' s.id %}" role="button">Download data</a></td></tr>
                 </table>
