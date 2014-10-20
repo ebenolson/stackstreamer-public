@@ -1,0 +1,13 @@
+syntax: glob
+node_modules*
+venv*
+*.pyc
+*.sqlite3
+migrations*
+.sublime*
+*.orig
+*.pid
+*.log
+django/static/*
+django/media/*
+*.secret

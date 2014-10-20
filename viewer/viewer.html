@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+  <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+  <link href="./assets/viewer.css" rel="stylesheet">
+
+    <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+  <link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet"/>
+  <link href="assets/bootstrap-tour.min.css" rel="stylesheet">
+
+  <script src="//code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
+  <script src="http://cdn.binaryjs.com/0/binary.js"></script>
+  <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
+  <script src="./assets/jquery.mousewheel.min.js"></script>
+  <script src="./assets/sprintf.min.js"></script>
+  <script src="./assets/purl.min.js"></script>
+  <script src="./assets/dom.jsPlumb-1.6.4-min.js"></script>
+  <script src="./assets/jquery.bPopup.min.js"></script>
+  <script src="./assets/bootbox.min.js"></script>
+  <script src="http://malsup.github.com/jquery.form.js"></script>
+  <script src="assets/bootstrap-tour.min.js"></script>
+  <script src="assets/js-md5.js"></script>  
+  <script src="./config.js"></script>
+  <script src="./viewer.js"></script>
+  <script src="./tour.js"></script>
+  <script src="./annotations.js"></script>
+  <script src="./export.js"></script>
+
+
+</head>
+<body>
+  <div id="viewport" class="hidden">
+
+  <div id="info" class="info overlay">
+    <ul class="list-unstyled">
+      <li><div class="label label-primary">
+          <span id="slice"/>
+      </div></li>
+      <li><div class="label label-primary">
+          <span id="zoom"/>
+      </div></li>
+      </ul>
+  </div>
+  <div class="buttonbar overlay">
+    <a id="helpbutton">
+      <span class="fa-stack fa-2x fa-lg">
+        <i class="fa fa-circle fa-stack-2x"></i>
+        <i class="fa fa-question fa-inverse fa-stack-1x"></i>
+      </span>
+    </a>
+    <a id="backbutton" href="/">
+      <span class="fa-stack fa-2x fa-lg">
+        <i class="fa fa-circle fa-stack-2x"></i>
+        <i class="fa fa-arrow-left fa-inverse fa-stack-1x"></i>
+      </span>
+    </a>
+    <a id="homebutton">
+      <span class="fa-stack fa-2x fa-lg">
+        <i class="fa fa-circle fa-stack-2x"></i>
+        <i class="fa fa-home fa-inverse fa-stack-1x"></i>
+      </span>
+    </a>
+    <a id="flagbutton">
+      <span class="fa-stack fa-2x fa-lg">
+        <i class="fa fa-circle fa-stack-2x"></i>
+        <i class="fa fa-flag fa-inverse fa-stack-1x"></i>
+      </span>
+    </a>
+    <a id="arrowbutton" class="">
+      <span class="fa-stack fa-2x fa-lg">
+        <i class="fa fa-circle fa-stack-2x"></i>
+        <i class="fa fa-location-arrow fa-inverse fa-stack-1x"></i>
+      </span>
+    </a>
+    <a id="snapshotbutton">
+      <span class="fa-stack fa-2x fa-lg">
+        <i class="fa fa-circle fa-stack-2x"></i>
+        <i class="fa fa-camera fa-inverse fa-stack-1x"></i>
+      </span>
+    </a>
+    <a id="exportbutton">
+      <span class="fa-stack fa-2x fa-lg">
+        <i class="fa fa-circle fa-stack-2x"></i>
+        <i class="fa fa-download fa-inverse fa-stack-1x"></i>
+      </span>
+    </a>
+    <a id="hideinfobutton">
+      <span class="fa-stack fa-2x fa-lg">
+        <i class="fa fa-circle fa-stack-2x"></i>
+        <i class="fa fa-arrows-alt fa-inverse fa-stack-1x"></i>
+      </span>
+    </a>    
+  </div> 
+  </div>  
+  <div id="flagbar" class="flagbar inactive overlay">
+    <div class="addflagbutton">
+    <a id="addflagbutton" class="btn btn-primary">
+      Create flag here
+    </a>
+    </div>
+    <div id="flaglist" class="scroll-pane vertical-only">    </div>
+  </div>
+
+  <div id="arrowbar" class="arrowbar inactive overlay">
+    <div class="addarrowbutton">
+    <a id="addarrowbutton" class="btn btn-primary">
+    Place new arrow
+    </a>
+    </div>
+    <div id="arrowlist" class="scroll-pane vertical-only">    </div>
+  </div>
+  <div class="fullscreenpopup" style="display:none"><h2><span class="label label-info">Press ESC to exit fullscreen mode</span></h2></div>
+  <div id="chromerequired">
+    <h2>
+    Warning: Stackstreamer is currently developed exclusively with Google Chrome, and compatibility issues are known to exist with other browsers, particularly Internet Explorer.<br><br>
+    If you experience problems, Chrome can be downloaded from <a href="https://www.google.com/chrome/browser/">https://www.google.com/chrome/browser/</a>.</span>
+    </h2>
+    <div><img src="assets/chrome.png"/></div>
+    <h2>
+      <a href="#" onclick="hideWarning()">Click here</a> to continue.
+    </h2>
+  </div>
+</body>
+
+
+</html>

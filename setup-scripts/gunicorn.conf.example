@@ -1,0 +1,9 @@
+# goes into /etc/init/
+# then sudo ln -s /lib/init/upstart-job /etc/init.d/gunicorn
+
+description "gunicorn serving stackstreamer.com"
+start on runlevel [2345]
+stop on runlevel [06]
+respawn 
+respawn limit 10 5
+exec /web/django/stackstreamer/scripts/run_gunicorn.sh
