@@ -75,10 +75,9 @@ function saveExport() {
             title:"Export Region",
             buttons: {
                       success: {
-                        label: "Create Data Export",
-                        className: "btn-success",
+                        label: "Sorry, this feature has been disabled in this demo",
+                        className: "btn-error",
                         callback: function () {
-                          $('#exportform').ajaxSubmit();
                         }
                       }
             } 
