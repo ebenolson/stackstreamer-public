@@ -505,10 +505,10 @@ function timerUpdate() {
   if (tiles_loading == 0) {
     $('#container').removeClass('hidden');
     $('.oldcontainer').remove();
+    if (cachedBordering == false) cacheBordering();
+    if (cachedAboveBelow == false) cacheAboveBelow();    
+    if (highResLoaded == false) loadHighresTileImages();
   }  
-  if (cachedBordering == false) cacheBordering();
-  if (cachedAboveBelow == false) cacheAboveBelow();    
-  if (highResLoaded == false) loadHighresTileImages();
 }
 
 $( document ).ready(function() {
