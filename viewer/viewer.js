@@ -3,7 +3,7 @@ var client;
 var controlStream;
 
 var info;
-var TILESIZE = 256;
+var TILESIZES = [256, 323, 406];
 var VIEWPORTW = $(window).width();
 var VIEWPORTH = $(window).height();
 
@@ -18,6 +18,9 @@ var tilecache = {};
 var cachedBordering = false;
 var cachedAboveBelow = false;
 var cacheCount = 0;
+
+var subZoom = 0;
+var subZoomLevels = 3;
 
 function hideWarning() {
   $('#chromerequired').remove();
@@ -51,7 +54,7 @@ function cacheImage(src) {
     return;
   }
   else {
-    console.log('caching '+ src);
+    //console.log('caching '+ src);
     tilecache[src] = jsmd5(src);
     tile = $('<div class="tile cached hidden"><img src=""/></div>');
     tile.attr('id','cached_'+src);
@@ -86,8 +89,8 @@ function buildTiles() {
   }
 
   $('.tile').each( function () {
-    $(this).css('left', $(this).data('x')*256);
-    $(this).css('top', $(this).data('y')*256);
+    $(this).css('left', $(this).data('x')*TILESIZES[subZoom]);
+    $(this).css('top', $(this).data('y')*TILESIZES[subZoom]);
   });
 }
 
@@ -98,8 +101,8 @@ function buildViewer(slice, zoom) {
   $('#viewport').prepend(el);
   var nx = info['tile sets'][zoom]['nx'];
   var ny = info['tile sets'][zoom]['ny'];
-  $('#container').css('width', nx*TILESIZE);
-  $('#container').css('height', ny*TILESIZE);
+  $('#container').css('width', nx*TILESIZES[subZoom]);
+  $('#container').css('height', ny*TILESIZES[subZoom]);
 
   $('#viewport').css('width', VIEWPORTW);
   $('#viewport').css('height', VIEWPORTH);
@@ -113,8 +116,8 @@ function goHome() {
   var layer = parseInt(info['number of slices']/2);
   var nx = info['tile sets'][0]['nx'];
   var ny = info['tile sets'][0]['ny'];
-  setLocation(layer, zoom, nx*TILESIZE/2, ny*TILESIZE/2);
-  console.log(nx*TILESIZE/2);
+  setLocation(layer, zoom, nx*TILESIZES[subZoom]/2, ny*TILESIZES[subZoom]/2);
+  console.log(nx*TILESIZES[subZoom]/2);
 }
 
 function buildInfo() {
@@ -147,10 +150,10 @@ function cacheBordering() {
   var x0 = -parseInt($('#container').css('left'));
   var y0 = -parseInt($('#container').css('top'));
 
-  var nxmin = Math.max(0, Math.floor(x0/TILESIZE)-1);
-  var nymin = Math.max(0, Math.floor(y0/TILESIZE)-1);
-  var nxmax = Math.min(info['tile sets'][$('#container').data('zoom')]['nx'], Math.ceil(x0/TILESIZE+VIEWPORTW/TILESIZE)+1);
-  var nymax = Math.min(info['tile sets'][$('#container').data('zoom')]['ny'], Math.ceil(y0/TILESIZE+VIEWPORTH/TILESIZE)+1);
+  var nxmin = Math.max(0, Math.floor(x0/TILESIZES[subZoom])-1);
+  var nymin = Math.max(0, Math.floor(y0/TILESIZES[subZoom])-1);
+  var nxmax = Math.min(info['tile sets'][$('#container').data('zoom')]['nx'], Math.ceil(x0/TILESIZES[subZoom]+VIEWPORTW/TILESIZES[subZoom])+1);
+  var nymax = Math.min(info['tile sets'][$('#container').data('zoom')]['ny'], Math.ceil(y0/TILESIZES[subZoom]+VIEWPORTH/TILESIZES[subZoom])+1);
 
   for (var i=nxmin-1; i<=nxmax+1; i++) {
     for (var j=nymin-1; j<=nymax+1; j++) {
@@ -165,14 +168,14 @@ function cacheBordering() {
 function cacheAboveBelow() {
   cachedAboveBelow = true;
 
-  console.log('cache above below');
+  //console.log('cache above below');
   var x0 = -parseInt($('#container').css('left'));
   var y0 = -parseInt($('#container').css('top'));
 
-  var nxmin = Math.max(0, Math.floor(x0/TILESIZE)-1);
-  var nymin = Math.max(0, Math.floor(y0/TILESIZE)-1);
-  var nxmax = Math.min(info['tile sets'][$('#container').data('zoom')]['nx'], Math.ceil(x0/TILESIZE+VIEWPORTW/TILESIZE)+1);
-  var nymax = Math.min(info['tile sets'][$('#container').data('zoom')]['ny'], Math.ceil(y0/TILESIZE+VIEWPORTH/TILESIZE)+1);
+  var nxmin = Math.max(0, Math.floor(x0/TILESIZES[subZoom])-1);
+  var nymin = Math.max(0, Math.floor(y0/TILESIZES[subZoom])-1);
+  var nxmax = Math.min(info['tile sets'][$('#container').data('zoom')]['nx'], Math.ceil(x0/TILESIZES[subZoom]+VIEWPORTW/TILESIZES[subZoom])+1);
+  var nymax = Math.min(info['tile sets'][$('#container').data('zoom')]['ny'], Math.ceil(y0/TILESIZES[subZoom]+VIEWPORTH/TILESIZES[subZoom])+1);
 
   for (var i=nxmin; i<=nxmax; i++) {
     for (var j=nymin; j<=nymax; j++) {
@@ -188,10 +191,10 @@ function updateVisibleTiles() {
   var x0 = -parseInt($('#container').css('left'));
   var y0 = -parseInt($('#container').css('top'));
 
-  var nxmin = Math.max(0, Math.floor(x0/TILESIZE)-1);
-  var nymin = Math.max(0, Math.floor(y0/TILESIZE)-1);
-  var nxmax = Math.min(info['tile sets'][$('#container').data('zoom')]['nx'], Math.ceil(x0/TILESIZE+VIEWPORTW/TILESIZE)+1);
-  var nymax = Math.min(info['tile sets'][$('#container').data('zoom')]['ny'], Math.ceil(y0/TILESIZE+VIEWPORTH/TILESIZE)+1);
+  var nxmin = Math.max(0, Math.floor(x0/TILESIZES[subZoom])-1);
+  var nymin = Math.max(0, Math.floor(y0/TILESIZES[subZoom])-1);
+  var nxmax = Math.min(info['tile sets'][$('#container').data('zoom')]['nx'], Math.ceil(x0/TILESIZES[subZoom]+VIEWPORTW/TILESIZES[subZoom])+1);
+  var nymax = Math.min(info['tile sets'][$('#container').data('zoom')]['ny'], Math.ceil(y0/TILESIZES[subZoom]+VIEWPORTH/TILESIZES[subZoom])+1);
   //console.log(nxmin, nxmax);
   //console.log(nxmax);
   //console.log(nymin);
@@ -212,14 +215,16 @@ function updateVisibleTiles() {
         tile.data('y', j);
         tile.attr('id', 'tile_'+i+'_'+j)
         //tile.addClass('hidden');
-        tile.css('left', tile.data('x')*256);
-        tile.css('top', tile.data('y')*256);          
+        tile.css('left', tile.data('x')*TILESIZES[subZoom]);
+        tile.css('top', tile.data('y')*TILESIZES[subZoom]);          
         $('#container').append(tile);
         loadImage(tile.attr('id'), sprintf("/zoom%1d/slice_%04d/tile_x%04d_y%04d.20.jpg", 
                   $('#container').data('zoom'), $('#container').data('slice'), tile.data('x'), tile.data('y')));                        
       }
     }
   }
+
+  $('#container .tile').removeClass('subzoom0').removeClass('subzoom1').removeClass('subzoom2').addClass('subzoom'+subZoom);
 }
 
 function dragUpdate(event, ui) {
@@ -279,8 +284,8 @@ function setLocation(layer, zoom, centerX, centerY) {
 
   var nx = info['tile sets'][$('#container').data('zoom')]['nx'];
   var ny = info['tile sets'][$('#container').data('zoom')]['ny'];
-  $('#container').css('width', nx*TILESIZE);
-  $('#container').css('height', ny*TILESIZE);      
+  $('#container').css('width', nx*TILESIZES[subZoom]);
+  $('#container').css('height', ny*TILESIZES[subZoom]);      
 
   var x = centerX/Math.pow(2, zoom);
   x = $(window).width()/2 - x;
@@ -304,16 +309,17 @@ function setLocation(layer, zoom, centerX, centerY) {
   clearCache();
 }
 
-function changeZoom(zoom, event) {
+function changeZoom(zoom, subzoom, event) {
+  console.log('changeZoom ', zoom, subzoom);
   if ($('.oldcontainer').length != 0) return;
 
   el = $('#container');
   oldzoom = el.data('zoom');
 
-  if (zoom<0) { zoom=0; }
-  if (zoom>info['tile sets'].length-1) { zoom = info['tile sets'].length-1; }
-
-  if (zoom == oldzoom) return;
+  if (zoom<0) return;
+  if (zoom>info['tile sets'].length-1) return;
+  if (zoom == oldzoom && subzoom == subZoom) return;
+  if (subzoom < 0 || subzoom >= subZoomLevels) return;
   
   var parentOffset = $('#viewport').offset(); 
 //or $(this).offset(); if you really just want the current element's offset
@@ -327,8 +333,8 @@ function changeZoom(zoom, event) {
   }
   oldContainerX = parseInt(el.css('left'));
   oldContainerY = parseInt(el.css('top'));      
-  newContainerX = mouseX - (mouseX - oldContainerX) * Math.pow(2, oldzoom-zoom);
-  newContainerY = mouseY - (mouseY - oldContainerY) * Math.pow(2, oldzoom-zoom);
+  newContainerX = mouseX - (mouseX - oldContainerX) * Math.pow(2, oldzoom-zoom - (subZoom-subzoom)/subZoomLevels);
+  newContainerY = mouseY - (mouseY - oldContainerY) * Math.pow(2, oldzoom-zoom - (subZoom-subzoom)/subZoomLevels);
 
   oldContainer = el.clone();
   oldContainer.attr('id','').addClass('oldcontainer').prependTo('#viewport');
@@ -338,10 +344,12 @@ function changeZoom(zoom, event) {
   el.css('left', newContainerX);
   el.css('top', newContainerY);
 
+  subZoom = subzoom;
+
   var nx = info['tile sets'][$('#container').data('zoom')]['nx'];
   var ny = info['tile sets'][$('#container').data('zoom')]['ny'];
-  $('#container').css('width', nx*TILESIZE);
-  $('#container').css('height', ny*TILESIZE);      
+  $('#container').css('width', nx*TILESIZES[subZoom]);
+  $('#container').css('height', ny*TILESIZES[subZoom]);      
 
   $('#container').addClass('hidden');
   //buildTiles();     
@@ -400,8 +408,17 @@ function activateControls() {
       changeLayer(i);
     }
     else {
-      var i = $('#container').data('zoom')+delta;
-      changeZoom(i, event);
+      var z = $('#container').data('zoom');
+      var sz = subZoom-delta;
+      if (sz < 0) {
+        sz = subZoomLevels-1;
+        z = z+1;
+      }
+      else if (sz >= subZoomLevels) {
+        sz = 0;
+        z = z-1;
+      }
+      changeZoom(z, sz, event);
     }
     event.preventDefault();
   });

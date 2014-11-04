@@ -70,8 +70,26 @@ body {
 .tile {
   position: absolute;
   overflow: hidden;
+}
+
+.tile img {
+  width: inherit;
+  height: inherit;
+}
+
+.subzoom0 {
   width: 256px;
   height: 256px;
+}
+
+.subzoom1 {
+  width: 323px;
+  height: 323px;
+}
+
+.subzoom2 {
+  width: 406px;
+  height: 406px;
 }
 
 .layericon {
