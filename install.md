@@ -39,6 +39,7 @@ Run these commands as the `app` user
 
         su app
         cd /web/django/stackstreamer
+        source venv/bin/activate
         ./manage.py syncdb
         ./manage.py migrate tastypie
         ./manage.py migrate djcelery
