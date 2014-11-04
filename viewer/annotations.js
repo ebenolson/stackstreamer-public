@@ -1,9 +1,9 @@
 
 function saveFlag() {
   var x = $(window).width()/2-$('#container').offset().left;
-  x = x*Math.pow(2, $('#container').data('zoom'));
+  x = x*Math.pow(2, $('#container').data('zoom') - subZoom/subZoomLevels);
   var y = $(window).height()/2-$('#container').offset().top;
-  y = y*Math.pow(2, $('#container').data('zoom'));
+  y = y*Math.pow(2, $('#container').data('zoom') - subZoom/subZoomLevels);
   console.log(x, y);
   var data = JSON.stringify({"pixel_x":x,
           "pixel_y":y,
@@ -105,8 +105,8 @@ function saveArrow() {
     var mouseX = event.pageX - offset.left;
     var mouseY = event.pageY - offset.top;
 
-    var x = mouseX*Math.pow(2, $('#container').data('zoom'));
-    var y = mouseY*Math.pow(2, $('#container').data('zoom'));
+    var x = mouseX*Math.pow(2, $('#container').data('zoom') - subZoom/subZoomLevels);
+    var y = mouseY*Math.pow(2, $('#container').data('zoom') - subZoom/subZoomLevels);
 
     var data = JSON.stringify({"pixel_x":x,
             "pixel_y":y,
@@ -170,8 +170,8 @@ function loadArrowMarkers() {
 
   $('#markers').load('/arrows/markers/'+info.id+'/', function() {
     $('.arrowmarker').each( function() {
-      var x = $(this).data('pixel-x')/Math.pow(2, $('#container').data('zoom'));
-      var y = $(this).data('pixel-y')/Math.pow(2, $('#container').data('zoom'));
+      var x = $(this).data('pixel-x')/Math.pow(2, $('#container').data('zoom') - subZoom/subZoomLevels);
+      var y = $(this).data('pixel-y')/Math.pow(2, $('#container').data('zoom') - subZoom/subZoomLevels);
 
       $(this).css('left', x);
       $(this).css('top', y);

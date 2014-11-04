@@ -241,8 +241,8 @@ function dragUpdate(event, ui) {
 
 function updateInfo() {
   $('#info #slice').text(sprintf("Layer %d of %d", $('#container').data('slice')+1, info['number of slices']));
-  var scale = Math.pow(2, $('#container').data('zoom'));
-  $('#info #zoom').text(sprintf("Scale 1 : %d", scale));
+  var scale = Math.pow(2, $('#container').data('zoom') - subZoom/subZoomLevels);
+  $('#info #zoom').text(sprintf("Scale 1 : %.2f", scale));
 
   $('.layericon,.active img').attr('src', "./assets/icon_layer.svg");
   $('.layericon,.active').removeClass('active');
