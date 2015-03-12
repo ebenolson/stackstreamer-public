@@ -399,7 +399,7 @@ function toggleInfo() {
 
 function activateControls() {
   $('#viewport').mousewheel(function(event) {
-    var delta = event.deltaY;
+    var delta = -1 * event.deltaY;
     if (delta > 1) { delta = 1; }
     if (delta < -1) { delta = -1; }
 
