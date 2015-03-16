@@ -3,7 +3,7 @@ var client;
 var controlStream;
 
 var info;
-var TILESIZES = [256, 323, 406];
+var TILESIZES = [256, 323, 406, 512, 645, 812, 1024];
 var VIEWPORTW = $(window).width();
 var VIEWPORTH = $(window).height();
 
@@ -21,6 +21,7 @@ var cacheCount = 0;
 
 var subZoom = 0;
 var subZoomLevels = 3;
+var ultimateSubZoom = 6;
 
 function hideWarning() {
   $('#chromerequired').remove();
@@ -319,7 +320,9 @@ function changeZoom(zoom, subzoom, event) {
   if (zoom<0) return;
   if (zoom>info['tile sets'].length-1) return;
   if (zoom == oldzoom && subzoom == subZoom) return;
-  if (subzoom < 0 || subzoom >= subZoomLevels) return;
+  if (subzoom < 0) return;
+  if (subzoom >= subZoomLevels && zoom != 0) return;
+  if (subzoom > ultimateSubZoom) return;
   
   var parentOffset = $('#viewport').offset(); 
 //or $(this).offset(); if you really just want the current element's offset
@@ -414,7 +417,7 @@ function activateControls() {
         sz = subZoomLevels-1;
         z = z+1;
       }
-      else if (sz >= subZoomLevels) {
+      else if (sz >= subZoomLevels && z != 0) {
         sz = 0;
         z = z-1;
       }

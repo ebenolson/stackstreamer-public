@@ -15,6 +15,13 @@ body {
     width:10%;
 }
 
+img { 
+    image-rendering: optimizeSpeed;             /*                     */
+    image-rendering: -webkit-optimize-contrast; /* Chrome (and Safari) */
+    image-rendering: optimize-contrast;         /* CSS3 Proposed       */
+    image-rendering: pixelated;
+    }
+
 #viewport {
   margin-left: auto;
   margin-right: auto;
@@ -90,6 +97,26 @@ body {
 .subzoom2 {
   width: 406px;
   height: 406px;
+}
+
+.subzoom3 {
+  width: 512px;
+  height: 512px;
+}
+
+.subzoom4 {
+  width: 645;
+  height: 645px;
+}
+
+.subzoom5 {
+  width: 812;
+  height: 812px;
+}
+
+.subzoom6 {
+  width: 1024;
+  height: 1024px;
 }
 
 .layericon {
