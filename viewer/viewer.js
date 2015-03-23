@@ -126,7 +126,9 @@ function buildInfo() {
     tile = $('<div class="layericon"><img src="./assets/icon_layer.svg"/></div>');
     tile.attr('id', 'layericon'+i);
     tile.data('layer', i);
-    tile.css('top', 100+800*i/info['number of slices']);
+    var spacing = Math.min(800/info['number of slices'], 20);
+    tile.css('top', 100+spacing*i);
+    console.log(spacing);
     $('#info').append(tile);      
   }
   $('.layericon').click( function() {
