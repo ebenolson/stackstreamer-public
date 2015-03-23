@@ -11,3 +11,4 @@ migrations*
 django/static/*
 django/media/*
 *.secret
+landingpage

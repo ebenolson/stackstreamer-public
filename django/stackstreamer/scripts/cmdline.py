@@ -46,7 +46,10 @@ def cmd_import_data(update=False):
             continue
 
         obj.path = dn
-        obj.name = dn.split('/')[-1]
+        try:
+            obj.name = stack_info['name']
+        except KeyError:
+            obj.name = dn.split('/')[-1]
         obj.pixel_size = stack_info['pixel size']
         obj.slice_spacing = stack_info['slice spacing']
         ts = [t for t in stack_info['tile sets'] if t['zoom'] == 0]
