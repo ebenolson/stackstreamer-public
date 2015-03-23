@@ -127,7 +127,7 @@ function buildInfo() {
     tile.attr('id', 'layericon'+i);
     tile.data('layer', i);
     var spacing = Math.min(800/info['number of slices'], 20);
-    tile.css('top', 100+spacing*i);
+    tile.css('top', 200+spacing*i);
     console.log(spacing);
     $('#info').append(tile);      
   }
@@ -246,6 +246,8 @@ function updateInfo() {
   $('#info #slice').text(sprintf("Layer %d of %d", $('#container').data('slice')+1, info['number of slices']));
   var scale = Math.pow(2, $('#container').data('zoom') - subZoom/subZoomLevels);
   $('#info #zoom').text(sprintf("Scale 1 : %.2f", scale));
+
+  $('#info #name').text(info['name']);
 
   $('.layericon,.active img').attr('src', "./assets/icon_layer.svg");
   $('.layericon,.active').removeClass('active');
@@ -435,21 +437,10 @@ function activateControls() {
   $('body').mouseup(function(event) {
     if (event.which === 1) lmb = false;
   });
-/*
-  $('#container').mouseup(function(event) {
-    if (event.originalEvent.detail === 2) { 
-      if (event.which === 3) { // right-click
-        var i = $(this).data('zoom')+1;
-        changeZoom(i, event);
-      } 
-      if (event.which === 1) { // right-click
-        var i = $(this).data('zoom')-1;
-        changeZoom(i, event);
-      } 
-    }
-  });
-*/
+
   $('#container').draggable({ drag: dragUpdate});
+
+  $('#backbutton').attr('href', document.referrer);
 
   $('#helpbutton').click(doTour);
 
@@ -461,7 +452,6 @@ function activateControls() {
 
   $('#snapshotbutton').click(saveSnapshot);
   $('#exportbutton').click(saveExport);
-    //$('a#snapshotbutton').attr('href','/export/fullslice/7a6e377e-ba80-4756-a857-a23c177722e2/100').attr('download','snapshot.png');
 
   $('#homebutton').click(goHome);
   $('#hideinfobutton').click(toggleInfo);
