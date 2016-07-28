@@ -10,10 +10,17 @@ from PIL import Image
 import os, os.path, sys
 import json, uuid
 
+
+def cmd_create_admin():
+    from django.contrib.auth.models import User
+    User.objects.create_superuser('admin', '', os.environ['ADMIN_PASSWORD'])
+
+
 def cmd_list_data():
     dns = os.listdir(settings.DATA_PATH)
     dns = [settings.DATA_PATH+dn for dn in dns if os.path.isdir(settings.DATA_PATH+dn)]
     print(dns)
+
 
 def cmd_import_data(update=False):
     dns = os.listdir(settings.DATA_PATH)
@@ -75,8 +82,10 @@ def cmd_import_data(update=False):
 
         obj.save()
 
+
 def usage():
 	print('python -m scripts.cmdline <command_name>')
+
 
 def main():
     if '--help' in ' '.join(sys.argv):

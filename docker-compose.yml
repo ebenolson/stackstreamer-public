@@ -1,0 +1,39 @@
+django:
+  restart: always
+  build: ./django
+  expose:
+    - "8000"
+  ports:
+    - "8000:8000"
+  volumes:
+    - ./django:/web/django
+    - ./docker/db:/data
+    - ./docker/logs:/web/logs
+  env_file: .env
+  working_dir: /web/django/stackstreamer
+  environment:
+    DEBUG: 'true'
+  command: scripts/startup.sh
+nginx:
+  restart: always
+  build: ./nginx/
+  ports:
+    - "80:80"
+  volumes:
+    - ./viewer:/web/viewer
+    - ./docker/logs:/web/logs
+  volumes_from:
+    - django
+  links:
+    - django:django
+node:
+  restart: always
+  build: ./node/
+  ports:
+    - "9000:9000"
+  volumes:
+    - ./docker/data:/data
+    - ./docker/logs:/web/logs
+  links:
+    - django:django
+  command: node server.js

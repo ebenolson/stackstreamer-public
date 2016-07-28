@@ -3,7 +3,8 @@ var client;
 var controlStream;
 
 var info;
-var TILESIZES = [256, 323, 406, 512, 645, 812, 1024];
+var ZOOM_EXP = 2;
+var TILESIZE = 256;
 var VIEWPORTW = $(window).width();
 var VIEWPORTH = $(window).height();
 
@@ -18,10 +19,6 @@ var tilecache = {};
 var cachedBordering = false;
 var cachedAboveBelow = false;
 var cacheCount = 0;
-
-var subZoom = 0;
-var subZoomLevels = 3;
-var ultimateSubZoom = 6;
 
 function hideWarning() {
   $('#chromerequired').remove();
@@ -90,8 +87,8 @@ function buildTiles() {
   }
 
   $('.tile').each( function () {
-    $(this).css('left', $(this).data('x')*TILESIZES[subZoom]);
-    $(this).css('top', $(this).data('y')*TILESIZES[subZoom]);
+    $(this).css('left', $(this).data('x')*TILESIZE);
+    $(this).css('top', $(this).data('y')*TILESIZE);
   });
 }
 
@@ -102,8 +99,8 @@ function buildViewer(slice, zoom) {
   $('#viewport').prepend(el);
   var nx = info['tile sets'][zoom]['nx'];
   var ny = info['tile sets'][zoom]['ny'];
-  $('#container').css('width', nx*TILESIZES[subZoom]);
-  $('#container').css('height', ny*TILESIZES[subZoom]);
+  $('#container').css('width', nx*TILESIZE);
+  $('#container').css('height', ny*TILESIZE);
 
   $('#viewport').css('width', VIEWPORTW);
   $('#viewport').css('height', VIEWPORTH);
@@ -117,8 +114,8 @@ function goHome() {
   var layer = parseInt(info['number of slices']/2);
   var nx = info['tile sets'][0]['nx'];
   var ny = info['tile sets'][0]['ny'];
-  setLocation(layer, zoom, nx*TILESIZES[subZoom]/2, ny*TILESIZES[subZoom]/2);
-  console.log(nx*TILESIZES[subZoom]/2);
+  setLocation(layer, zoom, nx*TILESIZE/2, ny*TILESIZE/2);
+  console.log(nx*TILESIZE/2);
 }
 
 function buildInfo() {
@@ -153,10 +150,10 @@ function cacheBordering() {
   var x0 = -parseInt($('#container').css('left'));
   var y0 = -parseInt($('#container').css('top'));
 
-  var nxmin = Math.max(0, Math.floor(x0/TILESIZES[subZoom])-1);
-  var nymin = Math.max(0, Math.floor(y0/TILESIZES[subZoom])-1);
-  var nxmax = Math.min(info['tile sets'][$('#container').data('zoom')]['nx'], Math.ceil(x0/TILESIZES[subZoom]+VIEWPORTW/TILESIZES[subZoom])+1);
-  var nymax = Math.min(info['tile sets'][$('#container').data('zoom')]['ny'], Math.ceil(y0/TILESIZES[subZoom]+VIEWPORTH/TILESIZES[subZoom])+1);
+  var nxmin = Math.max(0, Math.floor(x0/TILESIZE)-1);
+  var nymin = Math.max(0, Math.floor(y0/TILESIZE)-1);
+  var nxmax = Math.min(info['tile sets'][$('#container').data('zoom')]['nx'], Math.ceil(x0/TILESIZE+VIEWPORTW/TILESIZE)+1);
+  var nymax = Math.min(info['tile sets'][$('#container').data('zoom')]['ny'], Math.ceil(y0/TILESIZE+VIEWPORTH/TILESIZE)+1);
 
   for (var i=nxmin-1; i<=nxmax+1; i++) {
     for (var j=nymin-1; j<=nymax+1; j++) {
@@ -175,10 +172,10 @@ function cacheAboveBelow() {
   var x0 = -parseInt($('#container').css('left'));
   var y0 = -parseInt($('#container').css('top'));
 
-  var nxmin = Math.max(0, Math.floor(x0/TILESIZES[subZoom])-1);
-  var nymin = Math.max(0, Math.floor(y0/TILESIZES[subZoom])-1);
-  var nxmax = Math.min(info['tile sets'][$('#container').data('zoom')]['nx'], Math.ceil(x0/TILESIZES[subZoom]+VIEWPORTW/TILESIZES[subZoom])+1);
-  var nymax = Math.min(info['tile sets'][$('#container').data('zoom')]['ny'], Math.ceil(y0/TILESIZES[subZoom]+VIEWPORTH/TILESIZES[subZoom])+1);
+  var nxmin = Math.max(0, Math.floor(x0/TILESIZE)-1);
+  var nymin = Math.max(0, Math.floor(y0/TILESIZE)-1);
+  var nxmax = Math.min(info['tile sets'][$('#container').data('zoom')]['nx'], Math.ceil(x0/TILESIZE+VIEWPORTW/TILESIZE)+1);
+  var nymax = Math.min(info['tile sets'][$('#container').data('zoom')]['ny'], Math.ceil(y0/TILESIZE+VIEWPORTH/TILESIZE)+1);
 
   for (var i=nxmin; i<=nxmax; i++) {
     for (var j=nymin; j<=nymax; j++) {
@@ -194,10 +191,10 @@ function updateVisibleTiles() {
   var x0 = -parseInt($('#container').css('left'));
   var y0 = -parseInt($('#container').css('top'));
 
-  var nxmin = Math.max(0, Math.floor(x0/TILESIZES[subZoom])-1);
-  var nymin = Math.max(0, Math.floor(y0/TILESIZES[subZoom])-1);
-  var nxmax = Math.min(info['tile sets'][$('#container').data('zoom')]['nx'], Math.ceil(x0/TILESIZES[subZoom]+VIEWPORTW/TILESIZES[subZoom])+1);
-  var nymax = Math.min(info['tile sets'][$('#container').data('zoom')]['ny'], Math.ceil(y0/TILESIZES[subZoom]+VIEWPORTH/TILESIZES[subZoom])+1);
+  var nxmin = Math.max(0, Math.floor(x0/TILESIZE)-1);
+  var nymin = Math.max(0, Math.floor(y0/TILESIZE)-1);
+  var nxmax = Math.min(info['tile sets'][$('#container').data('zoom')]['nx'], Math.ceil(x0/TILESIZE+VIEWPORTW/TILESIZE)+1);
+  var nymax = Math.min(info['tile sets'][$('#container').data('zoom')]['ny'], Math.ceil(y0/TILESIZE+VIEWPORTH/TILESIZE)+1);
   //console.log(nxmin, nxmax);
   //console.log(nxmax);
   //console.log(nymin);
@@ -218,16 +215,14 @@ function updateVisibleTiles() {
         tile.data('y', j);
         tile.attr('id', 'tile_'+i+'_'+j)
         //tile.addClass('hidden');
-        tile.css('left', tile.data('x')*TILESIZES[subZoom]);
-        tile.css('top', tile.data('y')*TILESIZES[subZoom]);          
+        tile.css('left', tile.data('x')*TILESIZE);
+        tile.css('top', tile.data('y')*TILESIZE);          
         $('#container').append(tile);
         loadImage(tile.attr('id'), sprintf("/zoom%1d/slice_%04d/tile_x%04d_y%04d.20.jpg", 
                   $('#container').data('zoom'), $('#container').data('slice'), tile.data('x'), tile.data('y')));                        
       }
     }
   }
-
-  $('#container .tile').removeClass('subzoom0').removeClass('subzoom1').removeClass('subzoom2').addClass('subzoom'+subZoom);
 }
 
 function dragUpdate(event, ui) {
@@ -244,7 +239,7 @@ function dragUpdate(event, ui) {
 
 function updateInfo() {
   $('#info #slice').text(sprintf("Layer %d of %d", $('#container').data('slice')+1, info['number of slices']));
-  var scale = Math.pow(2, $('#container').data('zoom') - subZoom/subZoomLevels);
+  var scale = Math.pow(ZOOM_EXP, $('#container').data('zoom'));
   $('#info #zoom').text(sprintf("Scale 1 : %.2f", scale));
 
   $('#info #name').text(info['name']);
@@ -289,8 +284,8 @@ function setLocation(layer, zoom, centerX, centerY) {
 
   var nx = info['tile sets'][$('#container').data('zoom')]['nx'];
   var ny = info['tile sets'][$('#container').data('zoom')]['ny'];
-  $('#container').css('width', nx*TILESIZES[subZoom]);
-  $('#container').css('height', ny*TILESIZES[subZoom]);      
+  $('#container').css('width', nx*TILESIZE);
+  $('#container').css('height', ny*TILESIZE);      
 
   var x = centerX/Math.pow(2, zoom);
   x = $(window).width()/2 - x;
@@ -314,8 +309,8 @@ function setLocation(layer, zoom, centerX, centerY) {
   clearCache();
 }
 
-function changeZoom(zoom, subzoom, event) {
-  console.log('changeZoom ', zoom, subzoom);
+function changeZoom(zoom, event) {
+  console.log('changeZoom ', zoom);
   if ($('.oldcontainer').length != 0) return;
 
   el = $('#container');
@@ -323,10 +318,7 @@ function changeZoom(zoom, subzoom, event) {
 
   if (zoom<0) return;
   if (zoom>info['tile sets'].length-1) return;
-  if (zoom == oldzoom && subzoom == subZoom) return;
-  if (subzoom < 0) return;
-  if (subzoom >= subZoomLevels && zoom != 0) return;
-  if (subzoom > ultimateSubZoom) return;
+  if (zoom == oldzoom) return;
   
   var parentOffset = $('#viewport').offset(); 
 //or $(this).offset(); if you really just want the current element's offset
@@ -340,8 +332,8 @@ function changeZoom(zoom, subzoom, event) {
   }
   oldContainerX = parseInt(el.css('left'));
   oldContainerY = parseInt(el.css('top'));      
-  newContainerX = mouseX - (mouseX - oldContainerX) * Math.pow(2, oldzoom-zoom - (subZoom-subzoom)/subZoomLevels);
-  newContainerY = mouseY - (mouseY - oldContainerY) * Math.pow(2, oldzoom-zoom - (subZoom-subzoom)/subZoomLevels);
+  newContainerX = mouseX - (mouseX - oldContainerX) * Math.pow(ZOOM_EXP, oldzoom-zoom);
+  newContainerY = mouseY - (mouseY - oldContainerY) * Math.pow(ZOOM_EXP, oldzoom-zoom);
 
   oldContainer = el.clone();
   oldContainer.attr('id','').addClass('oldcontainer').prependTo('#viewport');
@@ -351,12 +343,10 @@ function changeZoom(zoom, subzoom, event) {
   el.css('left', newContainerX);
   el.css('top', newContainerY);
 
-  subZoom = subzoom;
-
   var nx = info['tile sets'][$('#container').data('zoom')]['nx'];
   var ny = info['tile sets'][$('#container').data('zoom')]['ny'];
-  $('#container').css('width', nx*TILESIZES[subZoom]);
-  $('#container').css('height', ny*TILESIZES[subZoom]);      
+  $('#container').css('width', nx*TILESIZE);
+  $('#container').css('height', ny*TILESIZE);      
 
   $('#container').addClass('hidden');
   //buildTiles();     
@@ -416,16 +406,8 @@ function activateControls() {
     }
     else {
       var z = $('#container').data('zoom');
-      var sz = subZoom-delta;
-      if (sz < 0) {
-        sz = subZoomLevels-1;
-        z = z+1;
-      }
-      else if (sz >= subZoomLevels && z != 0) {
-        sz = 0;
-        z = z-1;
-      }
-      changeZoom(z, sz, event);
+      z = z - delta;
+      changeZoom(z, event);
     }
     event.preventDefault();
   });
@@ -494,7 +476,8 @@ function connectToServer() {
       stream.on('data', function(data){         
         console.log('received info');
         info = $.parseJSON(data);
-
+        if (info['zoom factor'] != undefined) ZOOM_EXP = info['zoom factor'];
+        
         var url = sprintf('/api/v1/stack/?uuid=%s', info['uuid']);
         $.getJSON( url, function( data ) { 
           info.id = data.objects[0].id;

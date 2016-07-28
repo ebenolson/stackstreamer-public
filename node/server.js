@@ -8,10 +8,8 @@ var fs = require('graceful-fs');
 var path = require('path');
 var request = require("request")
 
-var DJANGO_URL = 'http://127.0.0.1';
+var DJANGO_URL = 'http://django:8000';
 var APP_ROOT = path.dirname(require.main.filename);
-var DATA_ROOT = '/home/eben/torres/torres-research-webviewer/pyramid/breast/pyramid/HnE';
-var DATA_ROOT = '/data/breast/pyramid/channel1';
 // Start Binary.js server
 var server = BinaryServer({port: 9000});
 
@@ -35,9 +33,13 @@ server.on('connection', function(client){
                             fs.readFile(body.path+'/info.json', 'utf8', function(err,data) {
                                 console.log('sending info');
                                 client.send(data, {'type':'info'});
-				console.log(data);
+				                console.log(data);
                             });
                         }
+                    }
+                    else {
+                        console.log(error);
+                        console.log(response);
                     }
                 });
             }
@@ -49,6 +51,7 @@ server.on('connection', function(client){
                     client.send(file, {'type':'image', 'src':data['path'], 'target':data['target']});
                 });
             	file.on('readable', function() {
+                    console.log('Sending tile ' + data['path']);
                     client.send(file, {'type':'image', 'src':data['path'], 'target':data['target']});
                 });
             }

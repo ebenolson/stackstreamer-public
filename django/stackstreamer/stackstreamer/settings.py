@@ -9,7 +9,8 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 """
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-import os, os.path
+import os
+import os.path
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 
@@ -28,7 +29,7 @@ DEBUG = False
 
 TEMPLATE_DEBUG = True
 
-PROJECT_DIR = os.path.dirname(__file__) # this is not Django setting.
+PROJECT_DIR = os.path.dirname(__file__)  # this is not Django setting.
 TEMPLATE_DIRS = (
     os.path.join(PROJECT_DIR, "templates"),
 )
@@ -37,7 +38,7 @@ ALLOWED_HOSTS = ['*']
 
 DATA_PATH = '/data/'
 MEDIA_ROOT = '/web/django/media/'
-MEDIA_URL = '/media/' 
+MEDIA_URL = '/media/'
 # Application definition
 
 INSTALLED_APPS = (
@@ -49,7 +50,7 @@ INSTALLED_APPS = (
     'sorl.thumbnail',
     'djcelery',
     'django_admin_bootstrapped.bootstrap3',
-    'django_admin_bootstrapped',    
+    'django_admin_bootstrapped',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -73,8 +74,8 @@ ROOT_URLCONF = 'stackstreamer.urls'
 WSGI_APPLICATION = 'stackstreamer.wsgi.application'
 
 BROKER_URL = 'amqp://'
-CELERY_RESULT_BACKEND='djcelery.backends.database:DatabaseBackend'
-CELERY_RESULT_BACKEND='djcelery.backends.cache:CacheBackend'
+CELERY_RESULT_BACKEND = 'djcelery.backends.database:DatabaseBackend'
+CELERY_RESULT_BACKEND = 'djcelery.backends.cache:CacheBackend'
 
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
@@ -82,7 +83,7 @@ CELERY_RESULT_BACKEND='djcelery.backends.cache:CacheBackend'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'NAME': os.path.join(DATA_PATH, 'db.sqlite3'),
     }
 }
 

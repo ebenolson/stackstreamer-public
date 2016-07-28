@@ -4,7 +4,9 @@
   "description": "server component of stackstreamer viewer",
   "main": "server.js",
   "dependencies": {
-    "binaryjs": "~0.2.1"
+    "binaryjs": "~0.2.1",
+    "graceful-fs": "",
+    "request": ""
   },
   "devDependencies": {},
   "scripts": {

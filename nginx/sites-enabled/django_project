@@ -1,0 +1,28 @@
+server {
+    listen 80 default_server;
+    #server_name my_application.mydomain.gr;
+    access_log /web/logs/nginx.access.log;
+    error_log /web/logs/nginx.error.log;
+
+    location /viewer/ {
+    alias /web/viewer/;
+    }
+    location /static/ { # STATIC_URL
+        alias /web/django/static/; # STATIC_ROOT
+        expires 30d;
+    }
+    location /media/ { # MEDIA_URL
+        alias /web/django/media/; # MEDIA_ROOT
+        expires 30d;
+    }
+    location / {
+        proxy_pass_header Server;
+        proxy_set_header Host $http_host;
+        proxy_redirect off;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Scheme $scheme;
+        proxy_connect_timeout 10;
+        proxy_read_timeout 10;
+        proxy_pass http://django:8000/;
+    }
+}
