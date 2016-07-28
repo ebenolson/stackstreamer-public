@@ -7,7 +7,7 @@ django:
     - "8000:8000"
   volumes:
     - ./django:/web/django
-    - ./docker/db:/data
+    - ./docker/data:/data
     - ./docker/logs:/web/logs
   env_file: .env
   working_dir: /web/django/stackstreamer
