@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from django.contrib.auth.decorators import login_required
@@ -7,6 +7,7 @@ from stackstreamer import settings
 from stackorg.models import Stack, Project
 
 from exportroi.models import DataExport
+from scripts.cmdline import cmd_import_data
 
 import os, os.path
 import json
@@ -17,6 +18,10 @@ def datalist(request):
     dns = [dn for dn in dns if os.path.isdir(settings.DATA_PATH+dn)]
     html = "<html><body>It is now %s.</body></html>" % repr(dns)
     return HttpResponse(html)
+
+def import_stacks(request):
+    cmd_import_data()
+    return redirect('list_all_stacks')
 
 @login_required
 def list_all_stacks(request):

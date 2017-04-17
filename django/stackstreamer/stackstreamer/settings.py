@@ -25,7 +25,7 @@ with open('/web/django/stackstreamer/viewer_key.secret') as f:
     VIEWER_SECRET_KEY = f.read().strip()
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 TEMPLATE_DEBUG = True
 

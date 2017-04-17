@@ -4,6 +4,7 @@ from stackorg.models import Stack
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from django.core.files import File
 from django.core.files.base import ContentFile
+from django.utils.dateparse import parse_datetime
 from cStringIO import StringIO
 from PIL import Image
 
@@ -23,6 +24,7 @@ def cmd_list_data():
 
 
 def cmd_import_data(update=False):
+
     dns = os.listdir(settings.DATA_PATH)
     dns = [settings.DATA_PATH+dn for dn in dns if os.path.isdir(settings.DATA_PATH+dn)]    
 
@@ -57,6 +59,7 @@ def cmd_import_data(update=False):
             obj.name = stack_info['name']
         except KeyError:
             obj.name = dn.split('/')[-1]
+        obj.date_acquired = parse_datetime(stack_info['date acquired'])
         obj.pixel_size = stack_info['pixel size']
         obj.slice_spacing = stack_info['slice spacing']
         ts = [t for t in stack_info['tile sets'] if t['zoom'] == 0]

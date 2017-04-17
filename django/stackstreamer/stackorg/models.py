@@ -13,7 +13,7 @@ class Stack(models.Model):
 	uuid = models.CharField(max_length=128)
 	thumbnail = models.ImageField(upload_to='thumbnails')
 	project = models.ForeignKey(Project, default=1)
-	date_acquired = models.DateField(default=datetime.date.today)
+	date_acquired = models.DateTimeField()
 	description = models.TextField(blank=True)
 	pixel_size = models.FloatField(default=0)
 	pixel_width = models.IntegerField(default=0)
